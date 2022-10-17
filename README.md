@@ -64,7 +64,7 @@ Library Management System is a web application that manages the library. It enab
 
 ## Database Model
 
-`{{TO-DO}}`
+![Database Model](https://user-images.githubusercontent.com/92747146/196192796-bd56dfde-3045-44aa-b0ca-e12b20144ffd.png)
 
 ## Authors
 
