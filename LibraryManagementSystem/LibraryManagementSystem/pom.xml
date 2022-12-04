@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.oss</groupId>
-	<artifactId>LibraryManagamentSystem</artifactId>
+	<artifactId>LibraryManagementSystem</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>LibraryManagamentSystem</name>
+	<name>LibraryManagementSystem</name>
 	<description>Spring Boot project for Java seminar</description>
 	<properties>
 		<java.version>19</java.version>
