@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.sql.Timestamp;
 
 
 @Entity
@@ -32,6 +32,6 @@ public class Loan {
 
     @Column(name = "date_issued")
     @NotNull(message = "date_issued shouldn't be null")
-    private Date dateIssued;
+    private Timestamp dateIssued;
 
 }
