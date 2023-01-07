@@ -18,7 +18,7 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
 
     @Column(name = "first_name")
     @NotNull(message = "first_name shouldn't be null")
