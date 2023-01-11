@@ -14,8 +14,8 @@ services:
       - SPRING_DATASOURCE_DB=postgres
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    # container_name: api
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#    container_name: api
 
   PostgreSQL:
     image: 'postgres:latest'
@@ -25,9 +25,11 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
-    # container_name: db
+#    container_name: db
