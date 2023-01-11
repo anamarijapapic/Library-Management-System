@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 @Data
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "\"user\"", uniqueConstraints = { @UniqueConstraint(columnNames = {"email"}) })
 public class User {
@@ -41,12 +40,21 @@ public class User {
     @NotNull(message = "date_of_birth shouldn't be null")
     private Timestamp dateOfBirth;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
-    private Role userRole;
+    private String userRole;
 
     @Column(name = "contact_number")
     @NotNull(message = "contact_number shouldn't be null")
     private String contactNumber;
+
+    public User(String firstName, String lastName, String passwd, String email, Timestamp dateOfBirth, String userRole, String contactNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.passwd = passwd;
+        this.email = email;
+        this.dateOfBirth = dateOfBirth;
+        this.userRole = userRole;
+        this.contactNumber = contactNumber;
+    }
 
 }
