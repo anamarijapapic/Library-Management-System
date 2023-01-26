@@ -11,7 +11,6 @@ import lombok.*;
 import org.oss.LibraryManagementSystem.models.enums.Status;
 import java.sql.Timestamp;
 
-
 @Entity
 @Data
 @Getter

@@ -2,10 +2,10 @@ package org.oss.LibraryManagementSystem.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.oss.LibraryManagementSystem.models.enums.Role;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.util.*;
 
 @Entity
 @Data
@@ -28,9 +28,9 @@ public class User {
     @NotNull(message = "last_name shouldn't be null")
     private String lastName;
 
-    @Column(name = "passwd")
-    @NotNull(message = "passwd shouldn't be null")
-    private String passwd;
+    @Column(name = "password")
+    @NotNull(message = "password shouldn't be null")
+    private String password;
 
     @Column(name = "email")
     @NotNull(message = "email shouldn't be null")
@@ -40,21 +40,30 @@ public class User {
     @NotNull(message = "date_of_birth shouldn't be null")
     private Timestamp dateOfBirth;
 
-    @Column(name = "user_role")
-    private String userRole;
-
     @Column(name = "contact_number")
     @NotNull(message = "contact_number shouldn't be null")
     private String contactNumber;
 
-    public User(String firstName, String lastName, String passwd, String email, Timestamp dateOfBirth, String userRole, String contactNumber) {
+    @Column(name = "enabled")
+    private boolean enabled;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
+
+    public User(String firstName, String lastName, String password, String email, Timestamp dateOfBirth, String contactNumber, boolean enabled, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.passwd = passwd;
+        this.password = password;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
-        this.userRole = userRole;
         this.contactNumber = contactNumber;
+        this.enabled = enabled;
+        this.roles = roles;
     }
 
 }

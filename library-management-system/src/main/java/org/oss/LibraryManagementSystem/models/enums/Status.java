@@ -1,6 +1,7 @@
 package org.oss.LibraryManagementSystem.models.enums;
 
 public enum Status {
+
     OK("OK"),
     DAMAGED("damaged"),
     LOST("lost");
@@ -10,5 +11,5 @@ public enum Status {
     private Status(String label) {
         this.label = label;
     }
-}
 
+}

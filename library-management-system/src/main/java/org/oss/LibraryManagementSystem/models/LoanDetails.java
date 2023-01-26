@@ -9,7 +9,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Timestamp;
 
-
 @Entity
 @Data
 @Getter
