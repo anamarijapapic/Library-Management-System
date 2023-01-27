@@ -20,4 +20,5 @@ public class CustomConfig implements WebMvcConfigurer {
         configurer.setCheckExistence(true);
         return configurer;
     }
+
 }

@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
-
 @Entity
 @Data
 @Getter

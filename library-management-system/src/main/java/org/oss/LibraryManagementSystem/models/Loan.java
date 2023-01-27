@@ -6,7 +6,6 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
-
 @Entity
 @Data
 @Getter
@@ -14,7 +13,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "loan")
-
 public class Loan {
 
     @Id
