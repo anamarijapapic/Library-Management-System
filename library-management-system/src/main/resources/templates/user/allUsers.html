@@ -6,6 +6,11 @@
 </head>
 <body>
 <h1 class="text-center">All users</h1>
+<div class="position-relative">
+  <div class="position-absolute top-0 end-0">
+    <a class="btn btn-primary" th:href="@{/user/details}" role="button">my details</a>
+  </div>
+</div>
 <div class="mt-2" th:if="${users.size() > 0}">
   <div>
     <form th:action="@{/user}" id="searchForm">
@@ -13,7 +18,7 @@
         <div class="col-sm-6">
           <div class="search row">
             <div class="col md-6">
-              <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control" placeholder="Enter email">
+              <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control" placeholder="Enter keyword">
             </div>
             <div class="col md-3">
               <button type="submit" class="btn btn-secondary">Search</button>
@@ -41,11 +46,37 @@
     <thead class="thead-light">
     <tr>
       <th scope="col">#</th>
-      <th scope="col">first name</th>
-      <th scope="col">last name</th>
+      <th scope="col">
+        <a th:href="@{'/user?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''}
+                + 'page=' + ${currentPage} + '&size=' + ${pageSize}
+                + ${sortField!=null ? '&sort=' + 'firstName' + ',' + (sortField == 'firstName' ? reverseSortDirection : sortDirection) : ''}}">
+          first name
+          <i th:if="${sortDirection == 'asc'}" i class="bi bi-sort-up"></i>
+          <i th:if="${sortDirection == 'desc'}" class="bi bi-sort-down"></i>
+        </a>
+      </th>
+      <th scope="col">
+        <a th:href="@{'/user?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''}
+                + 'page=' + ${currentPage} + '&size=' + ${pageSize}
+                + ${sortField!=null ? '&sort=' + 'lastName' + ',' + (sortField == 'lastName' ? reverseSortDirection : sortDirection) : ''}}">
+          last name
+          <i th:if="${sortDirection == 'asc'}" i class="bi bi-sort-up"></i>
+          <i th:if="${sortDirection == 'desc'}" class="bi bi-sort-down"></i>
+        </a>
+      </th>
       <th scope="col">email</th>
-      <th scope="col">date of birth</th>
+      <th scope="col">
+        <a th:href="@{'/user?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''}
+                + 'page=' + ${currentPage} + '&size=' + ${pageSize}
+                + ${sortField!=null ? '&sort=' + 'dateOfBirth' + ',' + (sortField == 'dateOfBirth' ? reverseSortDirection : sortDirection) : ''}}">
+          date of birth
+          <i th:if="${sortDirection == 'asc'}" i class="bi bi-sort-up"></i>
+          <i th:if="${sortDirection == 'desc'}" class="bi bi-sort-down"></i>
+        </a>
+      </th>
       <th scope="col">contact number</th>
+      <th scope="col">user role</th>
+      <th>action</th>
     </tr>
     </thead>
     <tbody>
@@ -56,6 +87,20 @@
       <td th:text="${user.email}"></td>
       <td th:text="${user.dateOfBirth}"></td>
       <td th:text="${user.contactNumber}"></td>
+      <td th:each="role : ${user.roles}">
+        <span th:text="${role.name.toLowerCase()}"></span>
+      </td>
+      <td>
+        <a class="btn btn-primary" th:href="@{/user/{userId}(userId=${user.id})}" role="button">user details</a>
+        <a th:if="${currentUserRole == 'ADMIN'}" class="btn btn-danger btn-delete btnDelete"
+           th:href="@{/user/{userId}/delete(userId=${user.id})}"
+           th:userEmail="${user.email}"
+           th:userFirstName="${user.firstName}"
+           th:userLastName="${user.lastName}"
+           role="button"
+        >Delete user
+        </a>
+      </td>
     </tr>
     </tbody>
   </table>
@@ -80,8 +125,41 @@
   </nav>
 </div>
 
+<div class="modal text-center" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Confirmation</h5>
+      </div>
+      <div class="modal-body">
+        <span id="confirmText"></span>
+      </div>
+      <div class="modal-footer">
+        <a type="button" id="yesBtn" class="btn btn-danger">Yes</a>
+        <button id="noBtn" type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
   $(document).ready(function () {
+
+    $(".btnDelete").on("click", function (e) {
+      e.preventDefault();
+      var href = $(this).attr("href");
+      var userEmail = $(this).attr("userEmail");
+      var userFirstName = $(this).attr("userFirstName");
+      var userLastName = $(this).attr("userLastName");
+      $("#confirmText").html("Do you want to delete this user: \<strong\>" + userFirstName + " " + userLastName + " " + userEmail + "\<\/strong\>?");
+      $('#myModal #yesBtn').attr('href',href);
+      $("#myModal").show();
+    });
+
+    $("#noBtn").on("click", function (e) {
+      e.preventDefault();
+      $("#myModal").hide();
+    });
 
     $("#btnClear").on("click", function (e) {
       e.preventDefault();
@@ -92,6 +170,10 @@
 
   function changePageSize() {
     $("#searchForm").submit();
+  }
+
+  function changeSortDirection() {
+    $("#sortDirection").submit();
   }
 </script>
 </body>
