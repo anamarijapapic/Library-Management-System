@@ -1,5 +1,7 @@
 package org.oss.LibraryManagementSystem.controllers;
 
+import org.oss.LibraryManagementSystem.dto.UserPayload;
+import org.oss.LibraryManagementSystem.models.User;
 import org.oss.LibraryManagementSystem.repositories.UserRepository;
 import org.oss.LibraryManagementSystem.services.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -8,8 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 @Controller
@@ -80,5 +86,19 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
         return "redirect:/user";
+    }
+
+
+    @GetMapping("/add")
+    public String addNewUser(Model model, UserPayload userPayload) {
+        model.addAttribute("userPayload", userPayload);
+        return "user/addNewUser";
+    }
+
+    @PostMapping("/saveUser")
+    public RedirectView saveNewUser(@ModelAttribute("userPayload") UserPayload userPayload) throws ParseException {
+        var user = userService.createUser(userPayload);
+        userRepository.save(user);
+        return new RedirectView("/user");
     }
 }

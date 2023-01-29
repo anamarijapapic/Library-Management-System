@@ -1,5 +1,7 @@
 package org.oss.LibraryManagementSystem.services;
 
+import org.oss.LibraryManagementSystem.dto.UserPayload;
+import org.oss.LibraryManagementSystem.models.Role;
 import org.oss.LibraryManagementSystem.models.User;
 import org.oss.LibraryManagementSystem.repositories.RoleRepository;
 import org.oss.LibraryManagementSystem.repositories.UserRepository;
@@ -9,10 +11,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -85,6 +93,33 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteUserById (Integer id){
         userRepository.findById(id).ifPresent(userRepository::delete);
+    }
+
+    @Override
+    public User createUser (UserPayload userPayload) throws ParseException {
+        var bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        var user = new User();
+        user.setFirstName(userPayload.getFirstName());
+        user.setLastName(userPayload.getLastName());
+        user.setEmail(userPayload.getEmail());
+        user.setContactNumber(userPayload.getContactNumber());
+
+        var roleUser = roleRepository.findByName(userPayload.getUserRole());
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleUser);
+        user.setRoles(roles);
+
+        if (userPayload.getPassword() != null){
+            var encodedPassword = bCryptPasswordEncoder.encode(userPayload.getPassword());
+            user.setPassword(encodedPassword);
+        }
+
+        var date = userPayload.getDateOfBirth();
+        var timestamp = new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse(date.toString()).getTime());
+        user.setDateOfBirth(timestamp);
+        user.setEnabled(true);
+
+        return user;
     }
 
 }
