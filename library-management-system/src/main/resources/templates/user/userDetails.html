@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+        crossorigin="anonymous">
+</head>
+<body>
+<h1 class="text-center">User details</h1>
+<div class="mt-2">
+  <table class="table table-hover table-responsive-xl mt-4">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">first name</th>
+        <th scope="col">last name</th>
+        <th scope="col">email</th>
+        <th scope="col">date of birth</th>
+        <th scope="col">contact number</th>
+        <th scope="col">user role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td th:text="${user.firstName}"></td>
+        <td th:text="${user.lastName}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.dateOfBirth}"></td>
+        <td th:text="${user.contactNumber}"></td>
+        <td th:each="role : ${user.roles}">
+          <span th:text="${role.name.toLowerCase()}"></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-center">
+    <a class="btn btn-primary"  th:href="@{'/user?'}" role="button">Back</a>
+  </div>
+</div>
+</body>
