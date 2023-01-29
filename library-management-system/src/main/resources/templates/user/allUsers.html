@@ -8,7 +8,8 @@
 <h1 class="text-center">All users</h1>
 <div class="position-relative">
   <div class="position-absolute top-0 end-0">
-    <a class="btn btn-primary" th:href="@{/user/details}" role="button">my details</a>
+    <a class="btn btn-primary" th:href="@{/user/details}" role="button">My details</a>
+    <a class="btn btn-primary" th:href="@{/user/add}">Add new user</a>
   </div>
 </div>
 <div class="mt-2" th:if="${users.size() > 0}">
@@ -92,6 +93,7 @@
       </td>
       <td>
         <a class="btn btn-primary" th:href="@{/user/{userId}(userId=${user.id})}" role="button">user details</a>
+        <a class="btn btn-primary" th:href="@{/user/{userId}/edit(userId=${user.id})}">Edit user</a>
         <a th:if="${currentUserRole == 'ADMIN'}" class="btn btn-danger btn-delete btnDelete"
            th:href="@{/user/{userId}/delete(userId=${user.id})}"
            th:userEmail="${user.email}"

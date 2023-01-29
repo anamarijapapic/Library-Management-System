@@ -122,4 +122,31 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
+    @Override
+    public User editUser (Integer id, UserPayload userPayload) throws ParseException {
+        var user = userRepository.findById(id).orElse(null);
+
+        var bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        user.setId(userPayload.getId());
+        user.setFirstName(userPayload.getFirstName());
+        user.setLastName(userPayload.getLastName());
+        user.setEmail(userPayload.getEmail());
+        user.setContactNumber(userPayload.getContactNumber());
+
+        var roleUser = roleRepository.findByName(userPayload.getUserRole());
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleUser);
+        user.setRoles(roles);
+
+        user.setPassword(userPayload.getPassword());
+
+        var date = userPayload.getDateOfBirth();
+        var timestamp = new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse(date.toString()).getTime());
+        user.setDateOfBirth(timestamp);
+        user.setEnabled(true);
+
+        return user;
+    }
+
 }

@@ -18,4 +18,6 @@ public interface UserService {
 
     User createUser (UserPayload userPayload) throws ParseException;
 
+    User editUser (Integer id, UserPayload userPayload) throws ParseException;
+
 }
