@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
-
 @Service
 public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
@@ -41,6 +40,7 @@ public class CategoryServiceImpl implements CategoryService{
         }
         return categoryPage;
     }
+
 
     @Override
     public void deleteCategoryById (Integer id){
