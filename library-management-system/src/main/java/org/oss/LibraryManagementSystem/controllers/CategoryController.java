@@ -45,6 +45,7 @@ public class CategoryController {
             model.addAttribute("keyword", keyword);
         return "category/allCategories";
     }
+
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @GetMapping("/add")
     public String addNewCategory(Model model, CategoryPayload categoryPayload) {
@@ -62,7 +63,7 @@ public class CategoryController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}/delete")
-    public String deleteUser (@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+    public String deleteCategory (@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             categoryService.deleteCategoryById(id);
             redirectAttributes.addFlashAttribute("message", "The category with id=" + id + " has been deleted successfully!");
