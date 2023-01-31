@@ -17,11 +17,11 @@
 <!--  </div>-->
   <h2>Add new user</h2><br>
   <form th:action="@{/user/saveUser}" method="POST">
-    <input type="text" th:field="*{userPayload.firstName}" placeholder="first name"  class="form-control mb-4 col-4">
-    <input type="text" th:field="*{userPayload.lastName}" placeholder="last name"  class="form-control mb-4 col-4">
-    <input type="text" th:field="*{userPayload.email}" placeholder="email"  class="form-control mb-4 col-4">
-    <input type="text" th:field="*{userPayload.contactNumber}" placeholder="phone number"  class="form-control mb-4 col-4">
-    <input type="date" th:field="*{userPayload.dateOfBirth}" placeholder="date of birth"  class="form-control mb-4 col-4">
+    <input type="text" th:field="*{userPayload.firstName}" placeholder="first name"  class="form-control mb-4 col-4" required="required">
+    <input type="text" th:field="*{userPayload.lastName}" placeholder="last name"  class="form-control mb-4 col-4" required="required">
+    <input type="text" th:field="*{userPayload.email}" placeholder="email"  class="form-control mb-4 col-4" required="required">
+    <input type="text" th:field="*{userPayload.contactNumber}" placeholder="phone number"  class="form-control mb-4 col-4" required="required">
+    <input type="date" th:field="*{userPayload.dateOfBirth}" placeholder="date of birth"  class="form-control mb-4 col-4" required="required">
     <label>User role: </label>
     <select th:field="*{userPayload.userRole}">
       <option
@@ -30,7 +30,7 @@
               th:value="${option.name}" th:text="${option.name.toLowerCase()}"
       ></option>
     </select>
-    <input type="password" th:field="*{userPayload.password}" placeholder="temporary password"  class="form-control mb-4 col-4">
+    <input type="password" th:field="*{userPayload.password}" placeholder="temporary password"  class="form-control mb-4 col-4" required="required">
     <button type="submit" class="btn btn-info col-2">add user</button>
   </form>
   <br>

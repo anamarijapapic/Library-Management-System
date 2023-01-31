@@ -12,7 +12,7 @@
 <div class="container">
   <h2>Add new category</h2><br>
   <form th:action="@{/categories/saveCategory}" method="POST">
-    <input type="text" th:field="*{categoryPayload.name}" placeholder="category name"  class="form-control mb-4 col-4">
+    <input type="text" th:field="*{categoryPayload.name}" placeholder="category name"  class="form-control mb-4 col-4" required="required">
     <button type="submit" class="btn btn-info col-2">add category</button>
   </form>
   <br>

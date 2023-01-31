@@ -13,8 +13,8 @@
   <h2>Edit author</h2><br>
   <form th:action="@{/authors/updateAuthor}" method="POST">
     <input type="hidden" th:field="*{authorPayload.id}">
-    <input type="text" th:field="*{authorPayload.firstName}" placeholder="first name" class="form-control mb-4 col-4">
-    <input type="text" th:field="*{authorPayload.lastName}" placeholder="last name" class="form-control mb-4 col-4">
+    <input type="text" th:field="*{authorPayload.firstName}" placeholder="first name" class="form-control mb-4 col-4" required="required">
+    <input type="text" th:field="*{authorPayload.lastName}" placeholder="last name" class="form-control mb-4 col-4" required="required">
     <button type="submit" class="btn btn-info col-2">Update author</button>
   </form>
   <br>
