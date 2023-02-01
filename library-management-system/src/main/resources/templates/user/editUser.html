@@ -20,11 +20,11 @@
     <input type="hidden" th:field="*{userPayload.id}">
     <input type="hidden" th:field="*{userPayload.password}">
 
-    <input type="text" th:field="*{userPayload.firstName}" placeholder="first name" class="form-control mb-4 col-4">
-    <input type="text" th:field="*{userPayload.lastName}" placeholder="last name" class="form-control mb-4 col-4">
-    <input type="text" th:field="*{userPayload.email}" placeholder="email" class="form-control mb-4 col-4">
-    <input type="text" th:field="*{userPayload.contactNumber}" placeholder="phone number" class="form-control mb-4 col-4">
-    <input type="date" th:field="*{userPayload.dateOfBirth}" placeholder="date of birth" class="form-control mb-4 col-4">
+    <input type="text" th:field="*{userPayload.firstName}" placeholder="first name" class="form-control mb-4 col-4" required="required">
+    <input type="text" th:field="*{userPayload.lastName}" placeholder="last name" class="form-control mb-4 col-4" required="required">
+    <input type="text" th:field="*{userPayload.email}" placeholder="email" class="form-control mb-4 col-4" required="required">
+    <input type="text" th:field="*{userPayload.contactNumber}" placeholder="phone number" class="form-control mb-4 col-4" required="required">
+    <input type="date" th:field="*{userPayload.dateOfBirth}" placeholder="date of birth" class="form-control mb-4 col-4" required="required">
     <label>User role: </label>
     <select th:field="*{userPayload.userRole}">
       <option
