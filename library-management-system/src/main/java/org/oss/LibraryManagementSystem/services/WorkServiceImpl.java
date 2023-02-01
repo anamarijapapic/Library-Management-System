@@ -73,4 +73,29 @@ public class WorkServiceImpl implements WorkService {
 
         return work;
     }
+
+    @Override
+    public Work editWork (Integer id, WorkPayload workPayload){
+        var work = workRepository.findById(id).orElse(null);
+
+        work.setId(workPayload.getId());
+        work.setTitle(workPayload.getTitle());
+        work.setDescription(workPayload.getDescription());
+        Set<Author> authors = new HashSet<>();
+        Set<Category> categories = new HashSet<>();
+        var authorSetId = workPayload.getAuthors();
+        var categorySetId = workPayload.getCategories();
+        for (var authorId : authorSetId) {
+            var author = authorRepository.findById(authorId).orElse(null);
+            authors.add(author);
+        }
+        for (var categoryId : categorySetId) {
+            var category = categoryRepository.findById(categoryId).orElse(null);
+            categories.add(category);
+        }
+        work.setAuthors(authors);
+        work.setCategories(categories);
+
+        return work;
+    }
 }

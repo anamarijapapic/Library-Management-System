@@ -80,6 +80,7 @@
           <span th:each="category : ${work.categories}" th:utext="${category.name + '<br>'}"><br/></span>
       </td>
       <td>
+        <a class="btn btn-primary" th:href="@{/works/{workId}/edit(workId=${work.id})}">Edit work</a>
         <a th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="btn btn-danger deleteButton"
            th:href="@{/works/{workId}/delete(workId=${work.id})}"
            th:workTitle="${work.title}"

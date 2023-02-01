@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Controller
 @RequestMapping("/works")
@@ -86,6 +89,37 @@ public class WorkController {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
         return "redirect:/works";
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
+    @GetMapping("{id}/edit")
+    public String editWork(@PathVariable("id") Integer id, Model model) {
+        var authors = authorRepository.findAll();
+        var categories = categoryRepository.findAll();
+        var work = workRepository.findById(id).orElse(null);
+        var workAuthors = work.getAuthors();
+        var workCategory = work.getCategories();
+        Set<Integer> authorsId = new HashSet<>();
+        Set<Integer> categoriesId = new HashSet<>();
+        for (var author : workAuthors) {
+            authorsId.add(author.getId());
+        }
+        for (var category : workCategory) {
+            categoriesId.add(category.getId());
+        }
+
+        model.addAttribute("workPayload", new WorkPayload(work.getId(), work.getTitle(), work.getDescription(), authorsId, categoriesId));
+        model.addAttribute("authorOptions", authors);
+        model.addAttribute("categoryOptions", categories);
+        return "work/editWork";
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
+    @PostMapping("/updateWork")
+    public RedirectView updateWork(@ModelAttribute("workPayload") WorkPayload workPayload){
+        var work = workService.editWork(workPayload.getId(), workPayload);
+        workRepository.save(work);
+        return new RedirectView("/works");
     }
 
 }

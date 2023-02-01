@@ -11,4 +11,6 @@ public interface WorkService {
     void deleteWorkById (Integer id);
 
     Work createWork (WorkPayload workPayload);
+
+    Work editWork (Integer id, WorkPayload workPayload);
 }
