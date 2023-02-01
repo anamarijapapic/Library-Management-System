@@ -1,7 +1,6 @@
 package org.oss.LibraryManagementSystem.controllers;
 
 import org.oss.LibraryManagementSystem.dto.AuthorPayload;
-import org.oss.LibraryManagementSystem.dto.CategoryPayload;
 import org.oss.LibraryManagementSystem.repositories.AuthorRepository;
 import org.oss.LibraryManagementSystem.services.AuthorService;
 import org.springframework.security.access.prepost.PreAuthorize;

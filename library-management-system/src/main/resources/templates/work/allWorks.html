@@ -15,7 +15,10 @@
 <h1 class="text-center">All works</h1>
 <div class="position-relative">
   <div class="position-absolute top-0 end-0">
-    <a class="btn btn-primary" th:href="@{/works/add}">Add new work</a>
+    <a class="btn btn-primary" th:href="@{/works/add}"
+       th:if="${#authorization.expression('hasAuthority(''ADMIN'')') or #authorization.expression('hasAuthority(''LIBRARIAN'')')}"
+    >Add new work
+    </a>
   </div>
 </div>
 <div class="mt-2" th:if="${works.size() > 0}">
@@ -65,7 +68,7 @@
       <th scope="col">Description</th>
       <th scope="col">Authors</th>
       <th scope="col">Categories</th>
-      <th>action</th>
+      <th th:if="${#authorization.expression('hasAuthority(''ADMIN'')') or #authorization.expression('hasAuthority(''LIBRARIAN'')')}">action</th>
     </tr>
     </thead>
     <tbody>
@@ -79,7 +82,7 @@
       <td>
           <span th:each="category : ${work.categories}" th:utext="${category.name + '<br>'}"><br/></span>
       </td>
-      <td>
+      <td th:if="${#authorization.expression('hasAuthority(''ADMIN'')') or #authorization.expression('hasAuthority(''LIBRARIAN'')')}">
         <a class="btn btn-primary" th:href="@{/works/{workId}/edit(workId=${work.id})}">Edit work</a>
         <a th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="btn btn-danger deleteButton"
            th:href="@{/works/{workId}/delete(workId=${work.id})}"
