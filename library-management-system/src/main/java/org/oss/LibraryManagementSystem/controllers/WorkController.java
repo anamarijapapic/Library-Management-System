@@ -35,9 +35,8 @@ public class WorkController {
         this.categoryRepository = categoryRepository;
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @GetMapping
-    public String getAllCategories(Model model,
+    public String getAllWorks(Model model,
                                    @RequestParam(required = false) String keyword,
                                    @RequestParam(defaultValue = "1") int page,
                                    @RequestParam(defaultValue = "3") int size,
@@ -81,7 +80,7 @@ public class WorkController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}/delete")
-    public String deleteUser (@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+    public String deleteWork (@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             workService.deleteWorkById(id);
             redirectAttributes.addFlashAttribute("message", "The work with id=" + id + " has been deleted successfully!");
