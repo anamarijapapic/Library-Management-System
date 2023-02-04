@@ -22,7 +22,7 @@
           <div class="col-sm-6">
             <div class="search row">
               <div class="col md-6">
-                <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control" placeholder="Enter work title">
+                <input id="keyword" type="search" name="keyword" th:value="${keyword}" class="form-control" placeholder="Enter work title">
               </div>
               <div class="col md-3">
                 <button type="submit" class="btn btn-secondary"> <i class="bi bi-search"></i> Search </button>
@@ -40,6 +40,16 @@
               <option th:value="9" th:text="9" th:selected="${9 == pageSize}"></option>
             </select>
           </div>
+          <div>
+            <select class="form-select col-lg-12 w-25" name="categoryName" onchange="changeCategoryName()">
+              <option selected disabled>All categories</option>
+              <option th:each="category: ${categoryOptions}"
+                      th:value="${category.name}"
+                      th:text="${category.name}"
+                      th:selected="${category.name == categoryName}"
+              ></option>
+            </select>
+          </div>
           <div class="col-md-3 mt-2">
             <button id="clearButton" class="btn btn-info">Clear your selection</button>
           </div>
@@ -52,8 +62,8 @@
         <th scope="col">#</th>
         <th scope="col">
           <a th:href="@{'/works?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''}
-                  + 'page=' + ${currentPage} + '&size=' + ${pageSize}
-                  + ${sortField!=null ? '&sort=' + 'title' + ',' + (sortField == 'title' ? reverseSortDirection : sortDirection) : ''}}">
+                + 'page=' + ${currentPage} + '&size=' + ${pageSize}
+                + ${sortField!=null ? '&sort=' + 'title' + ',' + (sortField == 'title' ? reverseSortDirection : sortDirection) : ''}}">
             work title
             <i th:if="${sortDirection == 'asc'}"  class="bi bi-sort-up"></i>
             <i th:if="${sortDirection == 'desc'}" class="bi bi-sort-down"></i>
@@ -74,7 +84,7 @@
           <span th:each="author : ${work.authors}" th:utext="${author.firstName + ' ' + author.lastName + '<br>'}"><br/></span>
         </td>
         <td>
-            <span th:each="category : ${work.categories}" th:utext="${category.name + '<br>'}"><br/></span>
+          <span th:each="category : ${work.categories}" th:utext="${category.name + '<br>'}"><br/></span>
         </td>
         <td th:if="${#authorization.expression('hasAuthority(''ADMIN'')') or #authorization.expression('hasAuthority(''LIBRARIAN'')')}">
           <a class="btn btn-primary" th:href="@{/works/{workId}/edit(workId=${work.id})}">Edit work</a>
@@ -100,10 +110,10 @@
     <nav aria-label="Page navigation">
       <ul class="pagination">
         <div th:if="${currentPage > 1 and works.size() > 0}">
-          <li class="page-item"><a class="page-link" th:href="@{'/works?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} + 'page=' + ${currentPage - 1} + '&size=' + ${pageSize}}">Previous</a></li>
+          <li class="page-item"><a class="page-link" th:href="@{'/works?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} + ${categoryName!=null && categoryName!=''? 'categoryName=' + categoryName + '&' : ''} + 'page=' + ${currentPage - 1} + '&size=' + ${pageSize}}">Previous</a></li>
         </div>
         <div th:if="${currentPage != totalPages and works.size() > 0 }">
-          <li class="page-item"><a class="page-link" th:href="@{'/works?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} + 'page=' + ${currentPage + 1} + '&size=' + ${pageSize}}">Next</a></li>
+          <li class="page-item"><a class="page-link" th:href="@{'/works?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +  ${categoryName!=null && categoryName!=''? 'categoryName=' + categoryName + '&' : ''} + 'page=' + ${currentPage + 1} + '&size=' + ${pageSize}}">Next</a></li>
         </div>
       </ul>
     </nav>
@@ -127,7 +137,6 @@
   </div>
 
   <script type="text/javascript">
-
     $(document).ready(function () {
 
       $(".deleteButton").on("click", function (e) {
@@ -155,8 +164,8 @@
       $("#workSearchForm").submit();
     }
 
-    function changeSortDirection() {
-      $("#sortDirection").submit();
+    function changeCategoryName() {
+      $("#workSearchForm").submit();
     }
   </script>
   <div th:replace="~{fragments/footer :: footer}"></div>

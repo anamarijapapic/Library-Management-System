@@ -31,17 +31,27 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public Page<Work> getAllWorks(String keyword, int page, int size, String[] sort) {
+    public Page<Work> getAllWorks(String keyword, String categoryName, int page, int size, String[] sort) {
         String sortField = sort[0];
         String sortDirection = sort[1];
         Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort.Order order = new Sort.Order(direction, sortField);
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
         Page<Work> workPage;
-        if (keyword == null) {
+        Category category = null;
+        if (keyword != null && categoryName != null && !categoryName.equals("All categories")) {
+            category = categoryRepository.findByName(categoryName);
+            workPage = workRepository.findByCategoriesEqualsAndTitleContainingIgnoreCase(category, keyword, paging);
+
+        } else if (categoryName != null && !categoryName.equals("All categories")) {
+            category = categoryRepository.findByName(categoryName);
+            workPage = workRepository.findByCategoriesEquals(category, paging);
+
+        } else if (keyword != null){
+            workPage = workRepository.findByTitleContainingIgnoreCase(keyword, paging);
+        }
+        else {
             workPage = workRepository.findAll(paging);
-        } else {
-            workPage = workRepository.findByTitleContaining(keyword, paging);
         }
         return workPage;
     }
