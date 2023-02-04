@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Page<User> getAllUsers(Authentication authentication, String keyword, int page, int size, String[] sort) {
+    public Page<User> getAllUsers(Authentication authentication, String keyword, String roleName, int page, int size, String[] sort) {
         var currentUser = userRepository.findByEmail(authentication.getName());
         var currentUserRoles = new ArrayList<String>();
         for (var role : currentUser.getRoles()){
@@ -45,23 +45,28 @@ public class UserServiceImpl implements UserService{
         Sort.Order order = new Sort.Order(direction, sortField);
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
         Page<User> pageUsers;
-        if (Objects.equals(currentUserRoles.get(0), "ADMIN")){
-            if (keyword == null) {
-                pageUsers = userRepository.findAll(paging);
+
+        var roleMember = roleRepository.findByName("MEMBER");
+        Role role = null;
+        if (keyword != null && roleName != null && !roleName.equals("All roles")) {
+            role = Objects.equals(currentUserRoles.get(0), "ADMIN") ? roleRepository.findByName(roleName) : roleMember;
+            pageUsers = userRepository.findByRolesEqualsAndEmailContainingIgnoreCase(role, keyword, paging);
+        } else if (roleName != null && !roleName.equals("All roles")) {
+            role = Objects.equals(currentUserRoles.get(0), "ADMIN") ? roleRepository.findByName(roleName) : roleMember;
+            pageUsers = userRepository.findByRolesEquals(role, paging);
+        } else if (keyword != null) {
+            if (Objects.equals(currentUserRoles.get(0), "ADMIN")) {
+                pageUsers = userRepository.findByEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(keyword, keyword, keyword, paging);
             } else {
-                pageUsers = userRepository.findByEmailContainingOrFirstNameContainingOrLastNameContaining(keyword, keyword, keyword, paging);
+                pageUsers = userRepository.findByRolesEqualsAndEmailContainingIgnoreCase(roleMember, keyword, paging);
             }
-            return pageUsers;
+        } else {
+            pageUsers = Objects.equals(currentUserRoles.get(0), "ADMIN")
+                    ? userRepository.findAll(paging)
+                    : userRepository.findByRolesEquals(roleMember, paging);
         }
-        else {
-            var memberRole = roleRepository.findByName("MEMBER");
-            if (keyword == null) {
-                pageUsers = userRepository.findByRolesEquals(memberRole, paging);
-            } else {
-                pageUsers = userRepository.findByRolesEqualsAndEmailContaining(memberRole, keyword, paging);
-            }
-            return pageUsers;
-        }
+
+        return pageUsers;
     }
 
     @Override

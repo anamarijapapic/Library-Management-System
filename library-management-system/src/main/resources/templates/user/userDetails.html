@@ -1,41 +1,59 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>User</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
-        crossorigin="anonymous">
+  <title>Library Management System - User Page</title>
+  <th:block th:insert="~{fragments/head :: head}"></th:block>
 </head>
 <body>
-<h1 class="text-center">User details</h1>
-<div class="mt-2">
-  <table class="table table-hover table-responsive-xl mt-4">
-    <thead class="thead-light">
-      <tr>
-        <th scope="col">first name</th>
-        <th scope="col">last name</th>
-        <th scope="col">email</th>
-        <th scope="col">date of birth</th>
-        <th scope="col">contact number</th>
-        <th scope="col">user role</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td th:text="${user.firstName}"></td>
-        <td th:text="${user.lastName}"></td>
-        <td th:text="${user.email}"></td>
-        <td th:text="${user.dateOfBirth}"></td>
-        <td th:text="${user.contactNumber}"></td>
-        <td th:each="role : ${user.roles}">
-          <span th:text="${role.name.toLowerCase()}"></span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="d-flex justify-content-center">
-    <a class="btn btn-primary"  th:href="@{'/user?'}" role="button">Back</a>
+  <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+
+  <div class="container">
+    <h1 class="display-2 text-center mt-2">User Details</h1>
+
+    <div class="d-flex justify-content-center">
+      <div class="card w-75 mx-auto my-4">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${'#' + user.id + ' - ' + user.firstName + ' ' + user.lastName}"></h5>
+          <h6 class="card-subtitle mb-2 text-muted" th:text="${user.email}"></h6>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <b>ID: </b>
+            <span th:text="${user.id}"></span>
+          </li>
+          <li class="list-group-item">
+            <b>First Name: </b>
+            <span th:text="${user.firstName}"></span>
+          </li>
+          <li class="list-group-item">
+            <b>Last Name: </b>
+            <span th:text="${user.lastName}"></span>
+          </li>
+          <li class="list-group-item">
+            <b>E-mail: </b>
+            <a th:href="${'mailto:' + user.email}" th:text="${user.email}"></a>
+          </li>
+          <li class="list-group-item">
+            <b>Date of Birth: </b>
+            <span th:text="${user.dateOfBirth}"></span>
+          </li>
+          <li class="list-group-item">
+            <b>Contact Number: </b>
+            <a th:href="${'tel:' + user.contactNumber}"  th:text="${user.contactNumber}"></a>
+          </li>
+          <li class="list-group-item">
+            <b>Role: </b>
+            <span th:each="role : ${user.roles}" th:text="${role.name}"></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <a class="btn btn-lg btn-secondary" th:href="@{'/users'}" role="button">Back</a>
+    </div>
   </div>
-</div>
+
+  <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
+</html>

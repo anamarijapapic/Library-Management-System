@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import java.text.ParseException;
 
 public interface UserService {
-    Page<User> getAllUsers (Authentication authentication, String keyword, int page, int size, String[] sort);
+    Page<User> getAllUsers (Authentication authentication, String keyword, String roleName, int page, int size, String[] sort);
 
      User getUser (Integer id);
 
