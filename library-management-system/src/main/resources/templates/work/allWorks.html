@@ -6,42 +6,32 @@
 </head>
 <body>
   <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
-  <h1 class="text-center">All works</h1>
-  <div class="position-relative">
-    <div class="position-absolute top-0 end-0">
-      <a class="btn btn-primary" th:href="@{/works/add}"
-         th:if="${#authorization.expression('hasAuthority(''ADMIN'')') or #authorization.expression('hasAuthority(''LIBRARIAN'')')}"
-      >Add new work
+
+  <div class="container">
+    <h1 class="display-2 text-center mt-2">Works</h1>
+
+    <div class="d-flex justify-content-end my-2" th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}">
+      <a class="btn btn-lg btn-success" th:href="@{/works/add}" title="Add Work">
+        <i class="bi bi-journal-plus"></i>
       </a>
     </div>
-  </div>
-  <div class="mt-2" th:if="${works.size() > 0}">
-    <div>
+
+    <div class="mt-2" th:if="${works.size() > 0}">
       <form th:action="@{/works}" id="workSearchForm">
-        <div class="row d-flex">
-          <div class="col-sm-6">
-            <div class="search row">
-              <div class="col md-6">
-                <input id="keyword" type="search" name="keyword" th:value="${keyword}" class="form-control" placeholder="Enter work title">
-              </div>
-              <div class="col md-3">
-                <button type="submit" class="btn btn-secondary"> <i class="bi bi-search"></i> Search </button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 input-group mt-2">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="pageSize">Items per page:</label>
-            </div>
-            <select form="workSearchForm" name="size" th:value="${pageSize}" onchange="changePageSize()" class="size-select"
-                    id="pageSize">
-              <option th:value="3" th:text="3" th:selected="${3 == pageSize}"></option>
-              <option th:value="6" th:text="6" th:selected="${6 == pageSize}"></option>
-              <option th:value="9" th:text="9" th:selected="${9 == pageSize}"></option>
-            </select>
-          </div>
-          <div>
-            <select class="form-select col-lg-12 w-25" name="categoryName" onchange="changeCategoryName()">
+        <div class="input-group my-3">
+          <input type="search" class="form-control" id="keyword" name="keyword"
+                 placeholder="Search works..." th:value="${keyword}"
+          >
+          <button type="submit" class="btn btn-outline-secondary" title="Search">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+
+        <div class="col-sm">
+          <div class="form-floating">
+            <select class="form-select" id="categoryName" name="categoryName"
+                    th:value="${categoryName}" onchange="changeCategoryName()"
+            >
               <option selected disabled>All categories</option>
               <option th:each="category: ${categoryOptions}"
                       th:value="${category.name}"
@@ -49,115 +39,163 @@
                       th:selected="${category.name == categoryName}"
               ></option>
             </select>
-          </div>
-          <div class="col-md-3 mt-2">
-            <button id="clearButton" class="btn btn-info">Clear your selection</button>
+            <label for="categoryName">Filter by category</label>
           </div>
         </div>
+
+        <div class="row g-2 my-3">
+          <div class="col-sm">
+            <div class="form-floating">
+              <select class="form-select" id="pageSize" name="size"
+                      th:value="${pageSize}" onchange="changePageSize()"
+              >
+                <option th:value="3" th:text="3" th:selected="${3 == pageSize}"></option>
+                <option th:value="6" th:text="6" th:selected="${6 == pageSize}"></option>
+                <option th:value="9" th:text="9" th:selected="${9 == pageSize}"></option>
+              </select>
+              <label for="pageSize">Items per page</label>
+            </div>
+          </div>
+        </div>
+
+        <button id="btnClear" class="btn btn-secondary">Clear selection</button>
       </form>
+
+      <div class="table-responsive mt-4">
+        <table class="table table-hover align-middle">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">
+                <a th:href="@{'/works?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
+                    + 'page=' + ${currentPage} + '&size=' + ${pageSize}
+                    + ${sortField != null ? '&sort=' + 'title' + ',' + (sortField == 'title' ? reverseSortDirection : sortDirection) : ''}}"
+                   class="text-decoration-none text-dark"
+                >
+                  Title
+                  <i th:if="${sortDirection == 'asc'}"  class="bi bi-sort-up"></i>
+                  <i th:if="${sortDirection == 'desc'}" class="bi bi-sort-down"></i>
+                </a>
+              </th>
+              <th scope="col">Description</th>
+              <th scope="col">Authors</th>
+              <th scope="col">Categories</th>
+              <th th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="work : ${works}">
+              <th scope="row" th:text="${work.id}"></th>
+              <td th:text="${work.title}"></td>
+              <td th:text="${work.description}"></td>
+              <td>
+                <span th:each="author : ${work.authors}" th:utext="${author.firstName + ' ' + author.lastName + '<br/>'}"></span>
+              </td>
+              <td>
+                <span th:each="category : ${work.categories}" th:utext="${category.name + '<br/>'}"></span>
+              </td>
+              <td th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}">
+                <a class="btn btn-warning" th:href="@{/works/{workId}/edit(workId=${work.id})}"
+                  title="Edit Work"
+                >
+                  <i class="bi bi-journal-album"></i>
+                </a>
+                <a th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="btn btn-danger btnDelete"
+                   th:href="@{/works/{workId}/delete(workId=${work.id})}"
+                   th:workTitle="${work.title}"
+                   role="button" title="Delete Work"
+                >
+                  <i class="bi bi-journal-minus"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+              <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link"
+                   th:href="@{'/works?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
+                   + ${categoryName != null && categoryName != '' ? 'categoryName=' + categoryName + '&' : ''}
+                   + 'page=' + ${currentPage - 1} + '&size=' + ${pageSize}
+                   + ${sortField != null && sortDirection != '' ? '&sort=' + sortField + ',' + sortDirection : ''}}"
+                >
+                  Previous
+                </a>
+              </li>
+              <li class="page-item" th:if="${currentPage != totalPages}">
+                <a class="page-link"
+                   th:href="@{'/works?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
+                   + ${categoryName != null && categoryName != ''? 'categoryName=' + categoryName + '&' : ''}
+                   + 'page=' + ${currentPage + 1} + '&size=' + ${pageSize}
+                   + ${sortField != null && sortDirection != '' ? '&sort=' + sortField + ',' + sortDirection : ''}}"
+                >
+                  Next
+                </a>
+              </li>
+          </ul>
+        </nav>
+      </div>
     </div>
-    <table class="table table-hover table-responsive-xl mt-4">
-      <thead class="thead-light">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">
-          <a th:href="@{'/works?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''}
-                + 'page=' + ${currentPage} + '&size=' + ${pageSize}
-                + ${sortField!=null ? '&sort=' + 'title' + ',' + (sortField == 'title' ? reverseSortDirection : sortDirection) : ''}}">
-            work title
-            <i th:if="${sortDirection == 'asc'}"  class="bi bi-sort-up"></i>
-            <i th:if="${sortDirection == 'desc'}" class="bi bi-sort-down"></i>
-          </a>
-        </th>
-        <th scope="col">Description</th>
-        <th scope="col">Authors</th>
-        <th scope="col">Categories</th>
-        <th th:if="${#authorization.expression('hasAuthority(''ADMIN'')') or #authorization.expression('hasAuthority(''LIBRARIAN'')')}">action</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="work : ${works}">
-        <th scope="row" th:text="${work.id}"></th>
-        <td th:text="${work.title}"></td>
-        <td th:text="${work.description}"></td>
-        <td>
-          <span th:each="author : ${work.authors}" th:utext="${author.firstName + ' ' + author.lastName + '<br>'}"><br/></span>
-        </td>
-        <td>
-          <span th:each="category : ${work.categories}" th:utext="${category.name + '<br>'}"><br/></span>
-        </td>
-        <td th:if="${#authorization.expression('hasAuthority(''ADMIN'')') or #authorization.expression('hasAuthority(''LIBRARIAN'')')}">
-          <a class="btn btn-primary" th:href="@{/works/{workId}/edit(workId=${work.id})}">Edit work</a>
-          <a th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="btn btn-danger deleteButton"
-             th:href="@{/works/{workId}/delete(workId=${work.id})}"
-             th:workTitle="${work.title}"
-             role="button"
-          ><i class="bi bi-trash"></i> Delete work
-          </a>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+
+    <div th:unless="${works.size() > 0}">
+      <p class="lead text-center">
+        No works found!
+      </p>
+      <div class="d-flex justify-content-center">
+        <a class="btn btn-lg btn-secondary" th:href="@{'/works'}" role="button">Back</a>
+      </div>
+    </div>
   </div>
 
-  <div th:unless="${works.size() > 0}">
-    <h6  class="text-center" >No works found!</h6>
-    <div class="d-flex justify-content-center">
-      <a class="btn btn-primary"  th:href="@{'/works?'}" role="button">Back</a>
-    </div>
-  </div>
-  <div class="d-flex justify-content-center">
-    <nav aria-label="Page navigation">
-      <ul class="pagination">
-        <div th:if="${currentPage > 1 and works.size() > 0}">
-          <li class="page-item"><a class="page-link" th:href="@{'/works?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} + ${categoryName!=null && categoryName!=''? 'categoryName=' + categoryName + '&' : ''} + 'page=' + ${currentPage - 1} + '&size=' + ${pageSize}}">Previous</a></li>
+  <div class="modal py-5" tabindex="-1" role="dialog" id="deleteModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header border-bottom-0">
+          <h1 class="modal-title fs-5">Confirm Delete</h1>
+          <button type="button" class="btn-close noBtn" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div th:if="${currentPage != totalPages and works.size() > 0 }">
-          <li class="page-item"><a class="page-link" th:href="@{'/works?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +  ${categoryName!=null && categoryName!=''? 'categoryName=' + categoryName + '&' : ''} + 'page=' + ${currentPage + 1} + '&size=' + ${pageSize}}">Next</a></li>
+        <div class="modal-body py-0">
+          <p><span id="confirmText"></span></p>
         </div>
-      </ul>
-    </nav>
-  </div>
-
-  <div class="modal text-center" id="workModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Delete Confirmation</h5>
-        </div>
-        <div class="modal-body">
-          <span id="deleteText"></span>
-        </div>
-        <div class="modal-footer">
-          <a type="button" id="yesButton" class="btn btn-danger">Yes</a>
-          <button id="noButton" type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <div class="modal-footer flex-column border-top-0">
+          <button type="button" id="yesBtn" class="btn btn-lg btn-danger w-100 mx-0 mb-2">Delete work</button>
+          <button type="button" class="btn btn-lg btn-light w-100 mx-0 noBtn" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
 
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
   <script type="text/javascript">
     $(document).ready(function () {
 
-      $(".deleteButton").on("click", function (e) {
+      $(".btnDelete").on("click", function (e) {
         e.preventDefault();
-        var href = $(this).attr("href");
-        var workTitle = $(this).attr("workTitle");
-        $("#deleteText").html("Do you want to delete this work: \<strong\>" + workTitle + "\<\/strong\>?");
-        $('#workModal #yesButton').attr('href',href);
-        $("#workModal").show();
+        let href = $(this).attr("href");
+        let workTitle = $(this).attr("workTitle");
+        $("#confirmText").html("Are you sure you want to delete work: \<b\>" + workTitle + "\<\/b\>?");
+        $('#deleteModal #yesBtn').attr('href',href);
+        $("#deleteModal").show();
       });
 
-      $("#noButton").on("click", function (e) {
+      $(".noBtn").on("click", function (e) {
         e.preventDefault();
-        $("#workModal").hide();
+        $("#deleteModal").hide();
       });
 
-      $("#clearButton").on("click", function (e) {
+      $("#btnClear").on("click", function (e) {
         e.preventDefault();
         $("#keyword").text("");
         window.location = "[[@{/works}]]";
       });
+
     });
 
     function changePageSize() {
@@ -168,6 +206,5 @@
       $("#workSearchForm").submit();
     }
   </script>
-  <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
