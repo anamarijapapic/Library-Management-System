@@ -6,16 +6,30 @@
 </head>
 <body>
   <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+
   <div class="container">
-    <h2>Add new author</h2><br>
-    <form th:action="@{/authors/saveAuthor}" method="POST">
-      <input type="text" th:field="*{authorPayload.firstName}" placeholder="first name"  class="form-control mb-4 col-4" required="required">
-      <input type="text" th:field="*{authorPayload.lastName}" placeholder="last name"  class="form-control mb-4 col-4" required="required">
-      <button type="submit" class="btn btn-info col-2">add author</button>
+    <h1 class="display-2 text-center mt-2">Add Author</h1>
+
+    <form th:action="@{/authors/saveAuthor}" method="POST" class="my-4">
+      <div class="row mb-3">
+        <label for="firstName" class="col-sm-2 col-form-label">First Name</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="firstName" th:field="*{authorPayload.firstName}" required>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label for="lastName" class="col-sm-2 col-form-label">Last Name</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="lastName" th:field="*{authorPayload.lastName}" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-lg btn-success">Add author</button>
     </form>
-    <br>
-    <a th:href="@{/authors}"> Back to all authors</a>
+
+    <a th:href="@{/authors}">Back to all authors</a>
   </div>
+
   <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
