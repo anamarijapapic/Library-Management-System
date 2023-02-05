@@ -19,10 +19,9 @@ import java.util.ArrayList;
 
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
@@ -36,17 +35,19 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @GetMapping
     public String getAllUsers(Authentication authentication, Model model,
-                              @RequestParam (required = false) String keyword,
+                              @RequestParam(required = false) String keyword,
+                              @RequestParam(required = false) String roleName,
                               @RequestParam(defaultValue = "1") int page,
                               @RequestParam(defaultValue = "3") int size,
                               @RequestParam(defaultValue = "id,asc") String[] sort) {
-        var userPage = userService.getAllUsers(authentication, keyword, page, size, sort);
+        var userPage = userService.getAllUsers(authentication, keyword, roleName, page, size, sort);
         var users = userPage.getContent();
         var currentUser = userRepository.findByEmail(authentication.getName());
         var currentUserRoles = new ArrayList<String>();
         for (var role : currentUser.getRoles()){
             currentUserRoles.add(role.getName());
         }
+        var roles = roleRepository.findAll();
         var sortField = sort[0];
         var sortDirection = sort[1];
         model.addAttribute("currentUserRole", currentUserRoles.get(0));
@@ -55,11 +56,14 @@ public class UserController {
         model.addAttribute("totalItems", userPage.getTotalElements());
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("pageSize", size);
-        model.addAttribute("sortField", sortField );
+        model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+        model.addAttribute("roleOptions", roles);
         if (keyword != null)
             model.addAttribute("keyword", keyword);
+        if (roleName != null)
+            model.addAttribute("roleName", roleName);
         return "user/allUsers";
     }
 
@@ -88,7 +92,7 @@ public class UserController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
-        return "redirect:/user";
+        return "redirect:/users";
     }
 
 
@@ -106,7 +110,7 @@ public class UserController {
     public RedirectView saveNewUser(@ModelAttribute("userPayload") UserPayload userPayload) throws ParseException {
         var user = userService.createUser(userPayload);
         userRepository.save(user);
-        return new RedirectView("/user");
+        return new RedirectView("/users");
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
@@ -131,6 +135,6 @@ public class UserController {
     public RedirectView updateUser(@ModelAttribute("userPayload") UserPayload userPayload) throws ParseException {
         var user = userService.editUser(userPayload.getId(), userPayload);
         userRepository.save(user);
-        return new RedirectView("/user");
+        return new RedirectView("/users");
     }
 }

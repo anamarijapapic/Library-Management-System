@@ -6,11 +6,12 @@ import org.springframework.data.domain.Page;
 
 public interface WorkService {
 
-    Page<Work> getAllWorks(String keyword, int page, int size, String[] sort);
+    Page<Work> getAllWorks(String keyword, String categoryName, int page, int size, String[] sort);
 
     void deleteWorkById (Integer id);
 
     Work createWork (WorkPayload workPayload);
 
     Work editWork (Integer id, WorkPayload workPayload);
+
 }

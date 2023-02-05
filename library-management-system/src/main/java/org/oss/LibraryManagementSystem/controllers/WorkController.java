@@ -37,14 +37,16 @@ public class WorkController {
 
     @GetMapping
     public String getAllWorks(Model model,
-                                   @RequestParam(required = false) String keyword,
-                                   @RequestParam(defaultValue = "1") int page,
-                                   @RequestParam(defaultValue = "3") int size,
-                                   @RequestParam(defaultValue = "id,asc") String[] sort) {
-        var pageWorks = workService.getAllWorks(keyword, page, size, sort);
+                              @RequestParam(required = false) String keyword,
+                              @RequestParam(required = false) String categoryName,
+                              @RequestParam(defaultValue = "1") int page,
+                              @RequestParam(defaultValue = "3") int size,
+                              @RequestParam(defaultValue = "id,asc") String[] sort) {
+        var pageWorks = workService.getAllWorks(keyword, categoryName, page, size, sort);
         var works = pageWorks.getContent();
         var sortField = sort[0];
         var sortDirection = sort[1];
+        var categories = categoryRepository.findAll();
         model.addAttribute("works", works);
         model.addAttribute("currentPage", pageWorks.getNumber() + 1);
         model.addAttribute("totalItems", pageWorks.getTotalElements());
@@ -53,8 +55,12 @@ public class WorkController {
         model.addAttribute("sortField", sortField );
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+        model.addAttribute("categoryOptions", categories);
         if (keyword != null)
             model.addAttribute("keyword", keyword);
+        if (categoryName != null){
+            model.addAttribute("categoryName", categoryName);
+        }
         return "work/allWorks";
     }
 

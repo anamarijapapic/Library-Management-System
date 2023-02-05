@@ -13,13 +13,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Page<User> findAll (Pageable pageable);
 
-    Page<User> findByEmailContaining(String email, Pageable pageable);
-
-    Page<User> findByEmailContainingOrFirstNameContainingOrLastNameContaining(String email, String firstName, String lastName, Pageable pageable);
+    Page<User> findByEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String email, String firstName, String lastName, Pageable pageable);
 
     Page<User> findByRolesEquals(Role role, Pageable pageable);
 
-    Page<User> findByRolesEqualsAndEmailContaining(Role role, String email, Pageable pageable);
-
+    Page<User> findByRolesEqualsAndEmailContainingIgnoreCase(Role role, String email, Pageable pageable);
 
 }
