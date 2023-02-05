@@ -6,15 +6,24 @@
 </head>
 <body>
   <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+
   <div class="container">
-    <h2>Add new category</h2><br>
-    <form th:action="@{/categories/saveCategory}" method="POST">
-      <input type="text" th:field="*{categoryPayload.name}" placeholder="category name"  class="form-control mb-4 col-4" required="required">
-      <button type="submit" class="btn btn-info col-2">add category</button>
+    <h1 class="display-2 text-center mt-2">Add Category</h1>
+
+    <form th:action="@{/categories/saveCategory}" method="POST" class="my-4">
+      <div class="row mb-3">
+        <label for="categoryName" class="col-sm-2 col-form-label">Category Name</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="categoryName" th:field="*{categoryPayload.name}" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-lg btn-success">Add category</button>
     </form>
-    <br>
+
     <a th:href="@{/categories}"> Back to all categories</a>
   </div>
+
   <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
