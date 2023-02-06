@@ -32,4 +32,11 @@ public class Loan {
     @NotNull(message = "date_issued shouldn't be null")
     private Timestamp dateIssued;
 
+    @Column(name = "date_returned")
+    private Timestamp dateReturned;
+
+    @OneToOne
+    @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
+    private Book book;
+
 }
