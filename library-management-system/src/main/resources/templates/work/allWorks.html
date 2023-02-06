@@ -80,9 +80,7 @@
               <th scope="col">Description</th>
               <th scope="col">Authors</th>
               <th scope="col">Categories</th>
-              <th th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}">
-                Action
-              </th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -96,8 +94,14 @@
               <td>
                 <span th:each="category : ${work.categories}" th:utext="${category.name + '<br/>'}"></span>
               </td>
-              <td th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}">
-                <a class="btn btn-warning" th:href="@{/works/{workId}/edit(workId=${work.id})}"
+              <td>
+                <a class="btn btn-primary" th:href="@{works/{workId}/books(workId=${work.id})}"
+                   role="button" title="Show Books"
+                >
+                  <i class="bi bi-book-fill"></i>
+                </a>
+                <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}"
+                   class="btn btn-warning" th:href="@{/works/{workId}/edit(workId=${work.id})}"
                   title="Edit Work"
                 >
                   <i class="bi bi-journal-album"></i>

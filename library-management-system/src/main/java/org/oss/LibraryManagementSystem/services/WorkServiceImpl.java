@@ -3,6 +3,7 @@ package org.oss.LibraryManagementSystem.services;
 import org.oss.LibraryManagementSystem.dto.WorkPayload;
 import org.oss.LibraryManagementSystem.models.*;
 import org.oss.LibraryManagementSystem.repositories.AuthorRepository;
+import org.oss.LibraryManagementSystem.repositories.BookRepository;
 import org.oss.LibraryManagementSystem.repositories.CategoryRepository;
 import org.oss.LibraryManagementSystem.repositories.WorkRepository;
 import org.springframework.data.domain.Page;
@@ -24,10 +25,13 @@ public class WorkServiceImpl implements WorkService {
 
     private final CategoryRepository categoryRepository;
 
-    public WorkServiceImpl(WorkRepository workRepository, AuthorRepository authorRepository, CategoryRepository categoryRepository) {
+    private final BookRepository bookRepository;
+
+    public WorkServiceImpl(WorkRepository workRepository, AuthorRepository authorRepository, CategoryRepository categoryRepository, BookRepository bookRepository) {
         this.workRepository = workRepository;
         this.authorRepository = authorRepository;
         this.categoryRepository = categoryRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -54,6 +58,23 @@ public class WorkServiceImpl implements WorkService {
             workPage = workRepository.findAll(paging);
         }
         return workPage;
+    }
+
+    @Override
+    public Page<Book> getBooksByWorkId (Integer workId, String keyword, int page, int size, String[] sort) {
+        String sortField = sort[0];
+        String sortDirection = sort[1];
+        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort.Order order = new Sort.Order(direction, sortField);
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
+        var work = workRepository.findById(workId).orElse(null);
+        Page<Book> bookPage;
+        if (keyword == null) {
+            bookPage = bookRepository.findByWork(work, paging);
+        } else {
+            bookPage = bookRepository.findByWorkAndPublisherNameContainingIgnoreCase(work, keyword, paging);
+        }
+        return bookPage;
     }
 
     @Override

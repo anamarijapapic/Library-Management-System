@@ -83,6 +83,34 @@ public class WorkController {
         return new RedirectView("/works");
     }
 
+    @GetMapping("/{id}/books")
+    public String getBooksByWork (Model model,
+                                  @PathVariable("id") Integer id,
+                                  @RequestParam(required = false) String keyword,
+                                  @RequestParam(defaultValue = "1") int page,
+                                  @RequestParam(defaultValue = "3") int size,
+                                  @RequestParam(defaultValue = "id,asc") String[] sort) {
+        var work = workRepository.findById(id).orElse(null);
+        var bookPage = workService.getBooksByWorkId(id, keyword, page, size, sort);
+        var books = bookPage.getContent();
+        var sortField = sort[0];
+        var sortDirection = sort[1];
+        if (work != null)
+            model.addAttribute("work", work);
+        model.addAttribute("workId", id);
+        model.addAttribute("books", books);
+        model.addAttribute("currentPage", bookPage.getNumber() + 1);
+        model.addAttribute("totalItems", bookPage.getTotalElements());
+        model.addAttribute("totalPages", bookPage.getTotalPages());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("sortField", sortField );
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+        if (keyword != null)
+            model.addAttribute("keyword", keyword);
+        return "work/booksByWork";
+    }
+
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}/delete")
