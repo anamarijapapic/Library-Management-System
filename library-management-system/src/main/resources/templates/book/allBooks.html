@@ -30,6 +30,22 @@
         <div class="row g-2 my-3">
           <div class="col-sm">
             <div class="form-floating">
+              <select class="form-select" id="statusName" name="statusName"
+                      th:value="${statusName}" onchange="changeStatusName()"
+              >
+                <option selected disabled>All statuses</option>
+                <option th:each="status: ${statusOptions}"
+                        th:value="${status.name()}"
+                        th:text="${status.name()}"
+                        th:selected="${status.name() == statusName}"
+                ></option>
+              </select>
+              <label for="statusName">Filter by status</label>
+            </div>
+          </div>
+
+          <div class="col-sm">
+            <div class="form-floating">
               <select class="form-select" id="pageSize" name="size"
                       th:value="${pageSize}" onchange="changePageSize()"
               >
@@ -44,16 +60,6 @@
 
         <button id="btnClear" class="btn btn-secondary">Clear selection</button>
       </form>
-
-      <div class="d-flex justify-content-end my-2">
-        <a class="btn btn-light" th:href="@{'/books?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''}
-                  + 'page=' + ${currentPage} + '&size=' + ${pageSize}
-                  + ${sortField!=null ? '&sort=' + 'yearOfPublishing' + ',' + (sortField == 'yearOfPublishing' ? reverseSortDirection : sortDirection) : ''}}">
-          Sort: Year of Publishing
-          <i th:if="${sortDirection == 'asc'}"  class="bi bi-sort-up"></i>
-          <i th:if="${sortDirection == 'desc'}" class="bi bi-sort-down"></i>
-        </a>
-      </div>
 
       <div class="row row-cols-1 row-cols-md-3 g-4 my-4">
         <div class="col" th:each="book : ${books}">
@@ -79,9 +85,16 @@
               </ul>
 
               <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')') and book.bookStatus.toString() == 'OK'}"
-                 href="#" class="btn btn-primary"
+                 th:href="@{/loans/{bookId}/start(bookId=${book.id})}"
+                 class="btn btn-primary"
               >
-                <i class="bi bi-person-fill-up"></i> Loan
+                <i class="bi bi-person-fill-up"></i> Start Loan
+              </a>
+              <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}"
+                 th:href="@{/loans/{bookId}/end(bookId=${book.id})}"
+                 class="btn btn-secondary"
+              >
+                <i class="bi bi-person-fill-down"></i> End Loan
               </a>
               <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}" class="btn btn-warning"
                  th:href="@{/books/{bookId}/edit(bookId=${book.id})}"
@@ -108,8 +121,8 @@
             <li class="page-item" th:if="${currentPage > 1}">
               <a class="page-link"
                  th:href="@{'/books?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
-                 + 'page=' + ${currentPage - 1} + '&size=' + ${pageSize}
-                 + ${sortField != null && sortDirection != '' ? '&sort=' + sortField + ',' + sortDirection : ''}}"
+                 + ${statusName != null && statusName != '' ? 'statusName=' + statusName + '&' : ''}
+                 + 'page=' + ${currentPage - 1} + '&size=' + ${pageSize}}"
               >
                 Previous
               </a>
@@ -117,8 +130,8 @@
             <li class="page-item" th:if="${currentPage != totalPages}">
               <a class="page-link"
                  th:href="@{'/books?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
-                 + 'page=' + ${currentPage + 1} + '&size=' + ${pageSize}
-                 + ${sortField != null && sortDirection != '' ? '&sort=' + sortField + ',' + sortDirection : ''}}"
+                 + ${statusName != null && statusName != '' ? 'statusName=' + statusName + '&' : ''}
+                 + 'page=' + ${currentPage + 1} + '&size=' + ${pageSize}}"
               >
                 Next
               </a>
@@ -185,6 +198,10 @@
     });
 
     function changePageSize() {
+      $("#bookSearchForm").submit();
+    }
+
+    function changeStatusName() {
       $("#bookSearchForm").submit();
     }
   </script>

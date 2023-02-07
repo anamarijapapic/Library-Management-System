@@ -27,23 +27,23 @@
           </button>
         </div>
 
-        <div class="col-sm">
-          <div class="form-floating">
-            <select class="form-select" id="categoryName" name="categoryName"
-                    th:value="${categoryName}" onchange="changeCategoryName()"
-            >
-              <option selected disabled>All categories</option>
-              <option th:each="category: ${categoryOptions}"
-                      th:value="${category.name}"
-                      th:text="${category.name}"
-                      th:selected="${category.name == categoryName}"
-              ></option>
-            </select>
-            <label for="categoryName">Filter by category</label>
-          </div>
-        </div>
-
         <div class="row g-2 my-3">
+          <div class="col-sm">
+            <div class="form-floating">
+              <select class="form-select" id="categoryName" name="categoryName"
+                      th:value="${categoryName}" onchange="changeCategoryName()"
+              >
+                <option selected disabled>All categories</option>
+                <option th:each="category: ${categoryOptions}"
+                        th:value="${category.name}"
+                        th:text="${category.name}"
+                        th:selected="${category.name == categoryName}"
+                ></option>
+              </select>
+              <label for="categoryName">Filter by category</label>
+            </div>
+          </div>
+
           <div class="col-sm">
             <div class="form-floating">
               <select class="form-select" id="pageSize" name="size"

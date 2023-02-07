@@ -15,6 +15,6 @@ public interface WorkService {
 
     Work editWork (Integer id, WorkPayload workPayload);
 
-    Page<Book> getBooksByWorkId (Integer workId, String keyword, int page, int size, String[] sort);
+    Page<Book> getBooksByWorkId (Integer workId, String keyword, String statusName, int page, int size);
 
 }
