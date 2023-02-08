@@ -29,19 +29,16 @@
 
         <div class="row g-2 my-3">
           <div class="col-sm">
-            <div class="form-floating">
-              <select class="form-select" id="categoryName" name="categoryName"
-                      th:value="${categoryName}" onchange="changeCategoryName()"
-              >
-                <option selected disabled>All categories</option>
-                <option th:each="category: ${categoryOptions}"
-                        th:value="${category.name}"
-                        th:text="${category.name}"
-                        th:selected="${category.name == categoryName}"
-                ></option>
-              </select>
-              <label for="categoryName">Filter by category</label>
-            </div>
+            <select class="form-select js-select2" id="categoryName" name="categoryName"
+                    th:value="${categoryName}" onchange="changeCategoryName()"
+            >
+              <option selected disabled>All categories</option>
+              <option th:each="category: ${categoryOptions}"
+                      th:value="${category.name}"
+                      th:text="${category.name}"
+                      th:selected="${category.name == categoryName}"
+              ></option>
+            </select>
           </div>
 
           <div class="col-sm">
@@ -179,6 +176,8 @@
 
   <script type="text/javascript">
     $(document).ready(function () {
+
+      $('.js-select2').select2();
 
       $(".btnDelete").on("click", function (e) {
         e.preventDefault();
