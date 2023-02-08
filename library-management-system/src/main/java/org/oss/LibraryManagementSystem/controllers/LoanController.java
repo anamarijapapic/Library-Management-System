@@ -69,6 +69,7 @@ public class LoanController {
     }
 
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @GetMapping
     public String getAllLoans(Model model,
                               @RequestParam(defaultValue = "1") int page,
@@ -79,6 +80,7 @@ public class LoanController {
         var sortField = sort[0];
         var sortDirection = sort[1];
         model.addAttribute("loans", loans);
+        model.addAttribute("loanType", "all");
         model.addAttribute("currentPage", pageLoans.getNumber() + 1);
         model.addAttribute("totalItems", pageLoans.getTotalElements());
         model.addAttribute("totalPages", pageLoans.getTotalPages());
@@ -89,6 +91,16 @@ public class LoanController {
         return "loan/allLoans";
     }
 
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @GetMapping("/myLoans")
+    public String myLoans(Model model) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var user =  userRepository.findByEmail(authentication.getName());
+        model.addAttribute("user", user);
+        return "loan/myLoans";
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN') or @userServiceImpl.findById(#memberId).id == @userServiceImpl.findByEmail(authentication.name).id")
     @GetMapping("/{memberId}/current")
     public String getCurrentLoans(@PathVariable("memberId") Integer memberId,
                                    Model model,
@@ -100,6 +112,7 @@ public class LoanController {
         var sortField = sort[0];
         var sortDirection = sort[1];
         model.addAttribute("loans", loans);
+        model.addAttribute("loanType", "current");
         model.addAttribute("currentPage", pageLoans.getNumber() + 1);
         model.addAttribute("totalItems", pageLoans.getTotalElements());
         model.addAttribute("totalPages", pageLoans.getTotalPages());
@@ -110,6 +123,7 @@ public class LoanController {
         return "loan/allLoans";
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN') or @userServiceImpl.findById(#memberId).id == @userServiceImpl.findByEmail(authentication.name).id")
     @GetMapping("/{memberId}/previous")
     public String getPreviousLoans(@PathVariable("memberId") Integer memberId,
                                   Model model,
@@ -121,6 +135,7 @@ public class LoanController {
         var sortField = sort[0];
         var sortDirection = sort[1];
         model.addAttribute("loans", loans);
+        model.addAttribute("loanType", "previous");
         model.addAttribute("currentPage", pageLoans.getNumber() + 1);
         model.addAttribute("totalItems", pageLoans.getTotalElements());
         model.addAttribute("totalPages", pageLoans.getTotalPages());

@@ -1,5 +1,6 @@
 package org.oss.LibraryManagementSystem.services;
 
+import lombok.Getter;
 import org.oss.LibraryManagementSystem.dto.UserPayload;
 import org.oss.LibraryManagementSystem.models.Role;
 import org.oss.LibraryManagementSystem.models.User;
@@ -22,8 +23,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
@@ -152,6 +154,14 @@ public class UserServiceImpl implements UserService{
         user.setEnabled(true);
 
         return user;
+    }
+
+    public User findById(Integer id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
 }
