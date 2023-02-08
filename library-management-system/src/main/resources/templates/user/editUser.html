@@ -63,5 +63,9 @@
   </div>
 
   <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <script type="text/javascript">
+    dateOfBirth.max = new Date().toISOString().split("T")[0];
+  </script>
 </body>
 </html>

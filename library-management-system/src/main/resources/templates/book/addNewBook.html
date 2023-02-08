@@ -61,6 +61,8 @@
     <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script type="text/javascript">
+        yearOfPublishing.max = new Date().toISOString().split("T")[0];
+
         $(document).ready(function() {
             $('.js-select2').select2();
         });
