@@ -55,6 +55,9 @@ public class LoanServiceImpl implements LoanService {
             loan.setDateReturned(null);
             loan.setBook(book);
 
+            book.setAvailable(false);
+            bookRepository.save(book);
+
             return loan;
         }
 
@@ -67,10 +70,13 @@ public class LoanServiceImpl implements LoanService {
 
         var loan = loanRepository.findTopByBookOrderByDateIssuedDesc(book);
 
-        if (loan != null && loan.getDateReturned() == null) {
+        if (book != null && loan != null && loan.getDateReturned() == null) {
             var dateReturned = new Timestamp(System.currentTimeMillis());
 
             loan.setDateReturned(dateReturned);
+
+            book.setAvailable(true);
+            bookRepository.save(book);
 
             return loan;
         }

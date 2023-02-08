@@ -43,6 +43,7 @@ public class BookServiceImpl  implements BookService {
         var statusStr = bookPayload.getBookStatus();
         var status = Status.valueOf(statusStr);
         book.setBookStatus(status);
+        book.setAvailable(true);
 
         return book;
     }
@@ -86,6 +87,7 @@ public class BookServiceImpl  implements BookService {
         var statusStr = bookPayload.getBookStatus();
         var status = Status.valueOf(statusStr);
         book.setBookStatus(status);
+        book.setAvailable(true);
 
         return book;
     }

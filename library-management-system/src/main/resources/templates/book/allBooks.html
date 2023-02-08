@@ -84,25 +84,25 @@
                 <li class="list-group-item" th:text="${'Status: ' + book.bookStatus}"></li>
               </ul>
 
-              <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')') and book.bookStatus.toString() == 'OK'}"
+              <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')') and book.bookStatus.toString() == 'OK' and book.isAvailable()}"
                  th:href="@{/loans/{bookId}/start(bookId=${book.id})}"
                  class="btn btn-primary"
               >
                 <i class="bi bi-person-fill-up"></i> Start Loan
               </a>
-              <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}"
+              <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')') and !book.isAvailable()}"
                  th:href="@{/loans/{bookId}/end(bookId=${book.id})}"
                  class="btn btn-secondary"
               >
                 <i class="bi bi-person-fill-down"></i> End Loan
               </a>
-              <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}" class="btn btn-warning"
+              <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')') and book.isAvailable()}" class="btn btn-warning"
                  th:href="@{/books/{bookId}/edit(bookId=${book.id})}"
                  title="Edit Book"
               >
                 <i class="bi bi-gear-fill"></i>
               </a>
-              <a th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="btn btn-danger btnDelete"
+              <a th:if="${#authorization.expression('hasAuthority(''ADMIN'')') and book.isAvailable()}" class="btn btn-danger btnDelete"
                  th:href="@{/books/{bookId}/delete(bookId=${book.id})}"
                  th:workTitle="${book.work.title}"
                  th:bookIsbn = "${book.isbn}"
