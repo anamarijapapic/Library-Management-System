@@ -37,9 +37,34 @@
             <th scope="col">#</th>
             <th scope="col">Member</th>
             <th scope="col">Librarian</th>
-            <th scope="col">Date issued</th>
-            <th scope="col">Date returned</th>
+            <th scope="col">
+              <a th:href="@{'/loans?'
+                        + 'page=' + ${currentPage} + '&size=' + ${pageSize}
+                        + ${sortField != null ? '&sort=' + 'dateIssued' + ',' + (sortField == 'dateIssued' ? reverseSortDirection : sortDirection) : ''}}"
+                 class="text-decoration-none text-dark"
+              >
+                Date issued
+                <i th:if="${(sortField == 'dateIssued' && sortDirection == 'asc') || sortField != 'dateIssued'}"
+                   class="bi bi-sort-up"
+                ></i>
+                <i th:if="${sortField == 'dateIssued' && sortDirection == 'desc'}" class="bi bi-sort-down"></i>
+              </a>
+            </th>
+            <th scope="col">
+              <a th:href="@{'/loans?'
+                        + 'page=' + ${currentPage} + '&size=' + ${pageSize}
+                        + ${sortField != null ? '&sort=' + 'dateReturned' + ',' + (sortField == 'dateReturned' ? reverseSortDirection : sortDirection) : ''}}"
+                 class="text-decoration-none text-dark"
+              >
+                Date returned
+                <i th:if="${(sortField == 'dateReturned' && sortDirection == 'asc') || sortField != 'dateReturned'}"
+                   class="bi bi-sort-up"
+                ></i>
+                <i th:if="${sortField == 'dateReturned' && sortDirection == 'desc'}" class="bi bi-sort-down"></i>
+              </a>
+            </th>
             <th scope="col">Book</th>
+            <th scope="col">Action</th>
           </tr>
           </thead>
           <tbody>
@@ -53,6 +78,18 @@
               <span th:unless="${loan.dateReturned != null}">Still in loan</span>
             </td>
             <td th:text="${loan.book.work.title}"></td>
+            <td>
+              <a class="btn btn-primary" th:href="@{/loans/{memberId}/current(memberId=${loan.member.id})}" role="button"
+                 title="current loans"
+              >
+                Current loans
+              </a>
+              <a class="btn btn-primary" th:href="@{/loans/{memberId}/previous(memberId=${loan.member.id})}" role="button"
+                 title="previous loans"
+              >
+                Previous loans
+              </a>
+            </td>
           </tr>
           </tbody>
         </table>

@@ -112,7 +112,8 @@
               </th>
               <th scope="col">Contact Number</th>
               <th scope="col">Role</th>
-              <th>Action</th>
+              <th scope="col">Action</th>
+              <th scope="col">Loans</th>
             </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -145,6 +146,18 @@
                    role="button" title="Delete User"
                 >
                   <i class="bi bi-person-fill-dash"></i>
+                </a>
+              </td>
+              <td>
+                <a class="btn btn-primary" th:href="@{/loans/{memberId}/current(memberId=${user.id})}" role="button"
+                   title="Current loans"
+                >
+                  Current loans
+                </a>
+                <a class="btn btn-primary" th:href="@{/loans/{memberId}/previous(memberId=${user.id})}" role="button"
+                   title="Previous loans"
+                >
+                  Previous loans
                 </a>
               </td>
             </tr>

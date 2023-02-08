@@ -17,15 +17,15 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 @RequestMapping("/loans")
 public class LoanController {
-    public LoanRepository loanRepository;
+    private final LoanRepository loanRepository;
 
-    public LoanService loanService;
+    private final LoanService loanService;
 
-    public UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-    public RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     public LoanController(LoanRepository loanRepository, LoanService loanService, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository){
         this.loanRepository = loanRepository;
@@ -33,6 +33,7 @@ public class LoanController {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.roleRepository = roleRepository;
+
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
@@ -66,6 +67,7 @@ public class LoanController {
         loanRepository.save(loan);
         return "redirect:/loans";
     }
+
 
     @GetMapping
     public String getAllLoans(Model model,
