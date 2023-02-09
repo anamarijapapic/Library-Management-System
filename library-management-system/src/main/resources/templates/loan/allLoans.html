@@ -108,12 +108,12 @@
               <td th:text="${loan.book.work.title}"></td>
               <td th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}">
                 <a class="btn btn-primary" th:href="@{/loans/{memberId}/current(memberId=${loan.member.id})}" role="button"
-                   title="current loans"
+                   title="Current loans"
                 >
                   Current Loans
                 </a>
                 <a class="btn btn-primary" th:href="@{/loans/{memberId}/previous(memberId=${loan.member.id})}" role="button"
-                   title="previous loans"
+                   title="Previous loans"
                 >
                   Previous Loans
                 </a>

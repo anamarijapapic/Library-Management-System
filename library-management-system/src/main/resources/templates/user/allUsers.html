@@ -149,16 +149,18 @@
                 </a>
               </td>
               <td>
-                <a class="btn btn-primary" th:href="@{/loans/{memberId}/current(memberId=${user.id})}" role="button"
-                   title="Current loans"
-                >
-                  Current loans
-                </a>
-                <a class="btn btn-primary" th:href="@{/loans/{memberId}/previous(memberId=${user.id})}" role="button"
-                   title="Previous loans"
-                >
-                  Previous loans
-                </a>
+                <div th:if="${user.roles.stream().findFirst().get().getName() == 'MEMBER'}">
+                  <a class="btn btn-primary" th:href="@{/loans/{memberId}/current(memberId=${user.id})}" role="button"
+                     title="Current loans"
+                  >
+                    Current loans
+                  </a>
+                  <a class="btn btn-primary" th:href="@{/loans/{memberId}/previous(memberId=${user.id})}" role="button"
+                     title="Previous loans"
+                  >
+                    Previous loans
+                  </a>
+                </div>
               </td>
             </tr>
           </tbody>
