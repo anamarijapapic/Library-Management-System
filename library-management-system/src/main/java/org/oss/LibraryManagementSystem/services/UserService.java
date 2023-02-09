@@ -20,4 +20,8 @@ public interface UserService {
 
     User editUser (Integer id, UserPayload userPayload) throws ParseException;
 
+    User findById(Integer id);
+
+    User findByEmail(String email);
+
 }

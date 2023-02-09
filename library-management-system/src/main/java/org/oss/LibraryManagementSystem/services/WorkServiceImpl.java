@@ -61,18 +61,19 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public Page<Book> getBooksByWorkId (Integer workId, String keyword, int page, int size, String[] sort) {
-        String sortField = sort[0];
-        String sortDirection = sort[1];
-        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort.Order order = new Sort.Order(direction, sortField);
-        Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
+    public Page<Book> getBooksByWorkId (Integer workId, String keyword, String statusName, int page, int size) {
+        Pageable paging = PageRequest.of(page - 1, size);
         var work = workRepository.findById(workId).orElse(null);
         Page<Book> bookPage;
-        if (keyword == null) {
-            bookPage = bookRepository.findByWork(work, paging);
-        } else {
+        if (keyword != null && statusName != null && !statusName.equals("All statuses")) {
+            bookPage = bookRepository.findByWorkIdAnAndBookStatusAndPublisherNameContainingAndIsbnContainingAllIgnoreCase(workId, statusName, keyword, keyword, paging);
+        } else if (statusName != null && !statusName.equals("All statuses")) {
+            bookPage = bookRepository.findByWorkIdAnAndBookStatus(workId, statusName, paging);
+        } else if (keyword != null) {
             bookPage = bookRepository.findByWorkAndPublisherNameContainingIgnoreCase(work, keyword, paging);
+        }
+        else {
+            bookPage = bookRepository.findByWork(work, paging);
         }
         return bookPage;
     }

@@ -45,4 +45,8 @@ public class Book {
     @Column(name = "book_status")
     private Status bookStatus;
 
+    @Column(name = "available")
+    @NotNull(message = "available shouldn't be null")
+    private boolean available;
+
 }

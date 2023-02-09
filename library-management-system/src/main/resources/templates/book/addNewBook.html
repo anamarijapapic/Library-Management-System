@@ -14,7 +14,7 @@
             <div class="row mb-3">
                 <label for="work" class="col-sm-2 col-form-label">Work</label>
                 <div class="col-sm-10">
-                    <select class="form-select" id="work" th:field="*{bookPayload.work}" required>
+                    <select class="form-select js-select2" id="work" th:field="*{bookPayload.work}" required>
                         <option
                                 th:each="work: ${workOptions}"
                                 th:value="${work.id}" th:text="${work.title}"
@@ -59,5 +59,13 @@
     </div>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script type="text/javascript">
+        yearOfPublishing.max = new Date().toISOString().split("T")[0];
+
+        $(document).ready(function() {
+            $('.js-select2').select2();
+        });
+    </script>
 </body>
 </html>

@@ -12,10 +12,4 @@ public class AppController {
         return "index";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/admin")
-    public String viewAdminPage() {
-        return "admin";
-    }
-
 }

@@ -1,6 +1,7 @@
 package org.oss.LibraryManagementSystem.controllers;
 
 import org.oss.LibraryManagementSystem.dto.WorkPayload;
+import org.oss.LibraryManagementSystem.models.enums.Status;
 import org.oss.LibraryManagementSystem.repositories.AuthorRepository;
 import org.oss.LibraryManagementSystem.repositories.CategoryRepository;
 import org.oss.LibraryManagementSystem.repositories.WorkRepository;
@@ -87,14 +88,13 @@ public class WorkController {
     public String getBooksByWork (Model model,
                                   @PathVariable("id") Integer id,
                                   @RequestParam(required = false) String keyword,
+                                  @RequestParam(required = false) String statusName,
                                   @RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "3") int size,
-                                  @RequestParam(defaultValue = "id,asc") String[] sort) {
+                                  @RequestParam(defaultValue = "3") int size) {
         var work = workRepository.findById(id).orElse(null);
-        var bookPage = workService.getBooksByWorkId(id, keyword, page, size, sort);
+        var bookPage = workService.getBooksByWorkId(id, keyword, statusName, page, size);
         var books = bookPage.getContent();
-        var sortField = sort[0];
-        var sortDirection = sort[1];
+        var statusOptions = Status.values();
         if (work != null)
             model.addAttribute("work", work);
         model.addAttribute("workId", id);
@@ -103,12 +103,12 @@ public class WorkController {
         model.addAttribute("totalItems", bookPage.getTotalElements());
         model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("pageSize", size);
-        model.addAttribute("sortField", sortField );
-        model.addAttribute("sortDirection", sortDirection);
-        model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+        model.addAttribute("statusOptions", statusOptions);
         if (keyword != null)
             model.addAttribute("keyword", keyword);
-        return "work/booksByWork";
+        if (statusName != null)
+            model.addAttribute("statusName", statusName);
+        return "book/allBooks";
     }
 
 

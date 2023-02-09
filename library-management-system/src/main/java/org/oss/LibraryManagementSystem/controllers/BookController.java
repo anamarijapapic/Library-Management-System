@@ -1,8 +1,6 @@
 package org.oss.LibraryManagementSystem.controllers;
 
 import org.oss.LibraryManagementSystem.dto.BookPayload;
-import org.oss.LibraryManagementSystem.dto.WorkPayload;
-import org.oss.LibraryManagementSystem.models.Book;
 import org.oss.LibraryManagementSystem.models.enums.Status;
 import org.oss.LibraryManagementSystem.repositories.BookRepository;
 import org.oss.LibraryManagementSystem.repositories.WorkRepository;
@@ -17,8 +15,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/books")
@@ -60,23 +56,22 @@ public class BookController {
     @GetMapping
     public String getAllBooks(Model model,
                               @RequestParam(required = false) String keyword,
+                              @RequestParam(required = false) String statusName,
                               @RequestParam(defaultValue = "1") int page,
-                              @RequestParam(defaultValue = "3") int size,
-                              @RequestParam(defaultValue = "id,asc") String[] sort) {
-        var pageBooks = bookService.getAllBooks(keyword, page, size, sort);
+                              @RequestParam(defaultValue = "3") int size) {
+        var pageBooks = bookService.getAllBooks(keyword, statusName, page, size);
         var books = pageBooks.getContent();
-        var sortField = sort[0];
-        var sortDirection = sort[1];
+        var statusOptions = Status.values();
         model.addAttribute("books", books);
         model.addAttribute("currentPage", pageBooks.getNumber() + 1);
         model.addAttribute("totalItems", pageBooks.getTotalElements());
         model.addAttribute("totalPages", pageBooks.getTotalPages());
         model.addAttribute("pageSize", size);
-        model.addAttribute("sortField", sortField );
-        model.addAttribute("sortDirection", sortDirection);
-        model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+        model.addAttribute("statusOptions", statusOptions);
         if (keyword != null)
             model.addAttribute("keyword", keyword);
+        if (statusName != null)
+            model.addAttribute("statusName", statusName);
         return "book/allBooks";
     }
 

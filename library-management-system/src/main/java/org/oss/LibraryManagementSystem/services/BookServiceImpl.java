@@ -1,35 +1,33 @@
 package org.oss.LibraryManagementSystem.services;
 
 import org.oss.LibraryManagementSystem.dto.BookPayload;
-import org.oss.LibraryManagementSystem.dto.WorkPayload;
-import org.oss.LibraryManagementSystem.models.Author;
 import org.oss.LibraryManagementSystem.models.Book;
-import org.oss.LibraryManagementSystem.models.Category;
-import org.oss.LibraryManagementSystem.models.Work;
 import org.oss.LibraryManagementSystem.models.enums.Status;
 import org.oss.LibraryManagementSystem.repositories.BookRepository;
+import org.oss.LibraryManagementSystem.repositories.LoanRepository;
 import org.oss.LibraryManagementSystem.repositories.WorkRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Service
-public class BookServiceImpl  implements BookService{
+public class BookServiceImpl  implements BookService {
     private final BookRepository bookRepository;
 
     private final WorkRepository workRepository;
+    private final LoanRepository loanRepository;
 
-    public BookServiceImpl (BookRepository bookRepository, WorkRepository workRepository) {
+    public BookServiceImpl (BookRepository bookRepository, WorkRepository workRepository,
+                            LoanRepository loanRepository) {
         this.bookRepository = bookRepository;
         this.workRepository = workRepository;
+        this.loanRepository = loanRepository;
     }
 
     @Override
@@ -45,22 +43,26 @@ public class BookServiceImpl  implements BookService{
         var statusStr = bookPayload.getBookStatus();
         var status = Status.valueOf(statusStr);
         book.setBookStatus(status);
+        book.setAvailable(true);
 
         return book;
     }
 
     @Override
-    public Page<Book> getAllBooks(String keyword, int page, int size, String[] sort) {
-        String sortField = sort[0];
-        String sortDirection = sort[1];
-        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort.Order order = new Sort.Order(direction, sortField);
-        Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
+    public Page<Book> getAllBooks(String keyword, String statusName, int page, int size) {
+        Pageable paging = PageRequest.of(page - 1, size);
         Page<Book> bookPage;
-        if (keyword == null) {
+        if (keyword != null && statusName != null && !statusName.equals("All statuses")) {
+            bookPage = bookRepository.findBooksByBookStatusAndPublisherNameContainingIgnoreCase(statusName, keyword, paging);
+
+        } else if (statusName != null && !statusName.equals("All statuses")) {
+            bookPage = bookRepository.findBooksByBookStatus(statusName, paging);
+
+        } else if (keyword != null) {
+            bookPage = bookRepository.findByIsbnContainingOrPublisherNameContainingAllIgnoreCase(keyword, keyword, paging);
+        }
+        else {
             bookPage = bookRepository.findAll(paging);
-        } else {
-            bookPage = bookRepository.findByIsbnContainingOrPublisherNameContaining(keyword, keyword, paging);
         }
         return bookPage;
     }
@@ -72,7 +74,7 @@ public class BookServiceImpl  implements BookService{
 
 
     @Override
-    public Book editBook (Integer id, BookPayload bookPayload) throws ParseException{
+    public Book editBook (Integer id, BookPayload bookPayload) throws ParseException {
         var book = bookRepository.findById(id).orElse(null);
 
         book.setId(bookPayload.getId());
@@ -85,6 +87,7 @@ public class BookServiceImpl  implements BookService{
         var statusStr = bookPayload.getBookStatus();
         var status = Status.valueOf(statusStr);
         book.setBookStatus(status);
+        book.setAvailable(true);
 
         return book;
     }

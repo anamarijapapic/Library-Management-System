@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Library Management System - Add Loan</title>
+    <th:block th:insert="~{fragments/head :: head}"></th:block>
+</head>
+<body>
+    <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+
+    <div class="container">
+        <h1 class="display-2 text-center mt-2">Add Loan</h1>
+
+        <form th:action="@{/loans/{bookId}/saveLoan(bookId=${book.id})}" method="POST" class="my-4">
+            <div class="row mb-3">
+                <label for="member" class="col-sm-2 col-form-label">Member</label>
+                <div class="col-sm-10">
+                    <select class="form-select js-select2" id="member" th:field="*{loanPayload.member}">
+                        <option th:each="member: ${memberOptions}"
+                                th:value="${member.id}" th:text="${member.firstName + ' ' + member.lastName}"
+                        ></option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-lg btn-success">Add loan</button>
+        </form>
+
+        <a th:href="@{/loans}">Back to all loans</a>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.js-select2').select2();
+        });
+    </script>
+</body>
+</html>

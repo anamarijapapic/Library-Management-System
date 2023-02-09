@@ -76,7 +76,7 @@ public class UserController {
         return "user/userDetails";
     }
 
-    @GetMapping("/details")
+    @GetMapping("/myDetails")
     public String userDetails(Model model) {
         var user = userService.currentUserDetails();
         model.addAttribute("user", user);
