@@ -1,11 +1,14 @@
 package org.oss.LibraryManagementSystem.controllers;
 
+import jakarta.mail.MessagingException;
 import org.oss.LibraryManagementSystem.dto.LoanPayload;
 import org.oss.LibraryManagementSystem.repositories.BookRepository;
 import org.oss.LibraryManagementSystem.repositories.LoanRepository;
 import org.oss.LibraryManagementSystem.repositories.RoleRepository;
 import org.oss.LibraryManagementSystem.repositories.UserRepository;
 import org.oss.LibraryManagementSystem.services.LoanService;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -54,17 +57,67 @@ public class LoanController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @PostMapping("/{bookId}/saveLoan")
-    public RedirectView saveNewLoan(@PathVariable("bookId") Integer bookId, @ModelAttribute("loanPayload") LoanPayload loanPayload){
+    public RedirectView saveNewLoan(@PathVariable("bookId") Integer bookId, @ModelAttribute("loanPayload") LoanPayload loanPayload) throws MessagingException {
         var loan = loanService.createLoan(bookId, loanPayload);
         loanRepository.save(loan);
+
+        var mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("mailhog");
+        mailSender.setPort(1025);
+        mailSender.setUsername("");
+        mailSender.setPassword("");
+
+        var messageText = "<h1>Loan Started</h1>"
+                + "<p>"
+                + "Book <b>" + loan.getBook().getWork().getTitle() + "</b>"
+                + " was issued on your name on date <b>" + loan.getDateIssued() + "</b>."
+                + "</p>";
+
+        var props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+
+        var mimeMessage = mailSender.createMimeMessage();
+        var mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+        mimeMessageHelper.setFrom("librarymanagementsystem@oss.org");
+        mimeMessageHelper.setText(messageText, true);
+        mimeMessageHelper.setTo(loan.getMember().getEmail());
+        mimeMessageHelper.setSubject("Loan Started");
+
+        mailSender.send(mimeMessage);
+
         return new RedirectView("/loans");
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @GetMapping("/{bookId}/end")
-    public String endLoan(@PathVariable("bookId") Integer bookId) {
+    public String endLoan(@PathVariable("bookId") Integer bookId) throws MessagingException {
         var loan = loanService.endLoan(bookId);
         loanRepository.save(loan);
+
+        var mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("mailhog");
+        mailSender.setPort(1025);
+        mailSender.setUsername("");
+        mailSender.setPassword("");
+
+        var messageText = "<h1>Loan Ended</h1>"
+                + "<p>"
+                + "You returned book <b>" + loan.getBook().getWork().getTitle() + "</b>"
+                + " on date <b>" + loan.getDateReturned() + "</b>."
+                + "</p>";
+
+        var props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+
+        var mimeMessage = mailSender.createMimeMessage();
+        var mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+        mimeMessageHelper.setFrom("librarymanagementsystem@oss.org");
+        mimeMessageHelper.setText(messageText, true);
+        mimeMessageHelper.setTo(loan.getMember().getEmail());
+        mimeMessageHelper.setSubject("Loan Ended");
+
+        mailSender.send(mimeMessage);
+
         return "redirect:/loans";
     }
 
