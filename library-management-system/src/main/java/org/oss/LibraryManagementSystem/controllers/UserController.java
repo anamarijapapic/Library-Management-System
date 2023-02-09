@@ -1,9 +1,12 @@
 package org.oss.LibraryManagementSystem.controllers;
 
+import jakarta.mail.MessagingException;
 import org.oss.LibraryManagementSystem.dto.UserPayload;
 import org.oss.LibraryManagementSystem.repositories.RoleRepository;
 import org.oss.LibraryManagementSystem.repositories.UserRepository;
 import org.oss.LibraryManagementSystem.services.UserService;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -107,9 +110,34 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @PostMapping("/saveUser")
-    public RedirectView saveNewUser(@ModelAttribute("userPayload") UserPayload userPayload) throws ParseException {
+    public RedirectView saveNewUser(@ModelAttribute("userPayload") UserPayload userPayload) throws ParseException, MessagingException {
         var user = userService.createUser(userPayload);
         userRepository.save(user);
+
+        var mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("mailhog");
+        mailSender.setPort(1025);
+        mailSender.setUsername("");
+        mailSender.setPassword("");
+
+        var messageText = "<h1>Welcome</h1>"
+                + "<p>"
+                + user.getFirstName() + ' ' + user.getLastName() + ", welcome to Library Management System!"
+                + "</p>"
+                + "<h5>Happy reading!</h5>";
+
+        var props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+
+        var mimeMessage = mailSender.createMimeMessage();
+        var mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+        mimeMessageHelper.setFrom("librarymanagementsystem@oss.org");
+        mimeMessageHelper.setText(messageText, true);
+        mimeMessageHelper.setTo(user.getEmail());
+        mimeMessageHelper.setSubject("Welcome to Library Management System");
+
+        mailSender.send(mimeMessage);
+
         return new RedirectView("/users");
     }
 
