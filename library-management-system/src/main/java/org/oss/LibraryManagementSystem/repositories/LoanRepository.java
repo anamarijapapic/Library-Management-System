@@ -13,6 +13,8 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
 
     Page<Loan> findAll(Pageable pageable);
 
+    Page<Loan> findByBookId(Integer bookId, Pageable pageable);
+
     Page<Loan> findByMemberIdAndDateReturned(Integer memberId, Timestamp dateReturned, Pageable pageable);
 
     Page<Loan> findByMemberIdAndDateReturnedBefore(Integer memberId, Timestamp dateReturned, Pageable pageable);

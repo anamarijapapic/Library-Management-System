@@ -12,6 +12,8 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     Page<Book> findAll(Pageable pageable);
 
+    Page<Book> findByWork(Work work, Pageable pageable);
+
     Page<Book> findByIsbnContainingOrPublisherNameContainingAllIgnoreCase(String isbn , String publisherName, Pageable pageable);
 
     Page<Book> findByWorkAndPublisherNameContainingIgnoreCase(Work work, String publisherName, Pageable pageable);

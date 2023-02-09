@@ -73,7 +73,7 @@ public class WorkServiceImpl implements WorkService {
             bookPage = bookRepository.findByWorkAndPublisherNameContainingIgnoreCase(work, keyword, paging);
         }
         else {
-            bookPage = bookRepository.findAll(paging);
+            bookPage = bookRepository.findByWork(work, paging);
         }
         return bookPage;
     }

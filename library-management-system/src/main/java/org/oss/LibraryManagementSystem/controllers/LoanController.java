@@ -109,9 +109,11 @@ public class LoanController {
                                    @RequestParam(defaultValue = "id,asc") String[] sort) {
         var pageLoans = loanService.getCurrentLoans(memberId, page, size, sort);
         var loans = pageLoans.getContent();
+        var member = userRepository.findById(memberId).orElse(null);
         var sortField = sort[0];
         var sortDirection = sort[1];
         model.addAttribute("loans", loans);
+        model.addAttribute("member", member);
         model.addAttribute("loanType", "current");
         model.addAttribute("currentPage", pageLoans.getNumber() + 1);
         model.addAttribute("totalItems", pageLoans.getTotalElements());
@@ -132,10 +134,36 @@ public class LoanController {
                                   @RequestParam(defaultValue = "id,asc") String[] sort) {
         var pageLoans = loanService.getPreviousLoans(memberId, page, size, sort);
         var loans = pageLoans.getContent();
+        var member = userRepository.findById(memberId).orElse(null);
         var sortField = sort[0];
         var sortDirection = sort[1];
         model.addAttribute("loans", loans);
+        model.addAttribute("member", member);
         model.addAttribute("loanType", "previous");
+        model.addAttribute("currentPage", pageLoans.getNumber() + 1);
+        model.addAttribute("totalItems", pageLoans.getTotalElements());
+        model.addAttribute("totalPages", pageLoans.getTotalPages());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("sortField", sortField );
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+        return "loan/allLoans";
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
+    @GetMapping("/book/{bookId}")
+    public String getLoansByBook(@PathVariable("bookId") Integer bookId,
+                                  Model model,
+                                  @RequestParam(defaultValue = "1") int page,
+                                  @RequestParam(defaultValue = "3") int size,
+                                  @RequestParam(defaultValue = "id,asc") String[] sort) {
+        var pageLoans = loanService.getLoansByBookId(bookId, page, size, sort);
+        var loans = pageLoans.getContent();
+        var book = bookRepository.findById(bookId).orElse(null);
+        var sortField = sort[0];
+        var sortDirection = sort[1];
+        model.addAttribute("loans", loans);
+        model.addAttribute("book", book);
         model.addAttribute("currentPage", pageLoans.getNumber() + 1);
         model.addAttribute("totalItems", pageLoans.getTotalElements());
         model.addAttribute("totalPages", pageLoans.getTotalPages());

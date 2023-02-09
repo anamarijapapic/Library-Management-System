@@ -108,7 +108,7 @@ public class WorkController {
             model.addAttribute("keyword", keyword);
         if (statusName != null)
             model.addAttribute("statusName", statusName);
-        return "work/booksByWork";
+        return "book/allBooks";
     }
 
 

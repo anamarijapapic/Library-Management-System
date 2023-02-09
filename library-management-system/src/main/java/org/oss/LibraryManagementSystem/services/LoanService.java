@@ -17,4 +17,6 @@ public interface LoanService {
 
     Page<Loan> getPreviousLoans(Integer memberId, int page, int size, String[] sort);
 
+    Page<Loan> getLoansByBookId(Integer bookId, int page, int size, String[] sort);
+
 }

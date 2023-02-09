@@ -9,6 +9,7 @@
 
   <div class="container">
     <h1 class="display-2 text-center mt-2">Books</h1>
+    <h1 th:if="${work != null}" class="display-4 text-center mt-1" th:text="${work.title}"></h1>
 
     <div class="d-flex justify-content-end my-2" th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}">
       <a class="btn btn-lg btn-success" th:href="@{/books/add}" title="Add Book">
@@ -17,7 +18,7 @@
     </div>
 
     <div class="mt-2" th:if="${books.size() > 0}">
-      <form th:action="@{/books}" id="bookSearchForm">
+      <form th:action="${workId == null ? '/books' : '/works/' + workId + '/books'}" id="bookSearchForm">
         <div class="input-group my-3">
           <input type="search" class="form-control" id="keyword" name="keyword"
                  placeholder="Search books..." th:value="${keyword}"
@@ -96,6 +97,12 @@
               >
                 <i class="bi bi-person-fill-down"></i> End Loan
               </a>
+              <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}" class="btn btn-outline-dark"
+                 th:href="@{/loans/book/{bookId}(bookId=${book.id})}"
+                 role="button" title="Show Loans"
+              >
+                <i class="bi bi-eye-fill"></i> Show Loans
+              </a>
               <a th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')') and book.isAvailable()}" class="btn btn-warning"
                  th:href="@{/books/{bookId}/edit(bookId=${book.id})}"
                  title="Edit Book"
@@ -120,7 +127,8 @@
           <ul class="pagination">
             <li class="page-item" th:if="${currentPage > 1}">
               <a class="page-link"
-                 th:href="@{'/books?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
+                 th:href="${workId == null ? '/books?' : '/works/' + ${workId} + '/books?'
+                 + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
                  + ${statusName != null && statusName != '' ? 'statusName=' + statusName + '&' : ''}
                  + 'page=' + ${currentPage - 1} + '&size=' + ${pageSize}}"
               >
@@ -129,7 +137,8 @@
             </li>
             <li class="page-item" th:if="${currentPage != totalPages}">
               <a class="page-link"
-                 th:href="@{'/books?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
+                 th:href="${workId == null ? '/books?' : '/works/' + ${workId} + '/books?'
+                 + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
                  + ${statusName != null && statusName != '' ? 'statusName=' + statusName + '&' : ''}
                  + 'page=' + ${currentPage + 1} + '&size=' + ${pageSize}}"
               >
@@ -146,7 +155,11 @@
         No books found!
       </p>
       <div class="d-flex justify-content-center">
-        <a class="btn btn-lg btn-secondary" th:href="@{'/books'}" role="button">Back</a>
+        <a class="btn btn-lg btn-secondary" th:href="${workId == null ? '/books' : '/works/' + workId + '/books'}"
+           role="button"
+        >
+          Back
+        </a>
       </div>
     </div>
   </div>
@@ -192,7 +205,7 @@
       $("#btnClear").on("click", function (e) {
         e.preventDefault();
         $("#keyword").text("");
-        window.location = "[[@{/books}]]";
+        window.location = "[[${workId == null ? '/books' : '/works/' + workId + '/books'}]]";
       });
 
     });
