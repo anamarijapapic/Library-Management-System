@@ -81,6 +81,12 @@ Library Management System is a web application that manages the library. It enab
 - View all loans of specific book (with sorting and pagination)
 - View loans by member - current loans and previous loans (with sorting and pagination)
 
+### Mail Notification Sending
+
+- Send "Welcome" mail to user when his account is created
+- Send "Loan Started" mail to member when he borrows a book
+- Send "Loan Ended" mail to member he returns a book 
+
 ## Technologies
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
