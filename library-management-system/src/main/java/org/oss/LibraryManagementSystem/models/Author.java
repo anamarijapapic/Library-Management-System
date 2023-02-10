@@ -27,4 +27,9 @@ public class Author {
     @NotNull(message = "last_name shouldn't be null")
     private String lastName;
 
+    public Author(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
 }

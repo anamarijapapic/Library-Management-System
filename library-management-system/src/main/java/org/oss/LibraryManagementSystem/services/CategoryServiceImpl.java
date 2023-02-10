@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (keyword == null) {
             categoryPage = categoryRepository.findAll(paging);
         } else {
-            categoryPage = categoryRepository.findByNameContaining(keyword, paging);
+            categoryPage = categoryRepository.findByNameContainingIgnoreCase(keyword, paging);
         }
 
         return categoryPage;

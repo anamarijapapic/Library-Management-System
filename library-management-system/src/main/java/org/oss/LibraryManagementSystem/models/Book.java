@@ -45,4 +45,13 @@ public class Book {
     @NotNull(message = "available shouldn't be null")
     private boolean available;
 
+    public Book(Work work, String publisherName, Timestamp yearOfPublishing, String isbn, Status bookStatus, boolean available) {
+        this.work = work;
+        this.publisherName = publisherName;
+        this.yearOfPublishing = yearOfPublishing;
+        this.isbn = isbn;
+        this.bookStatus = bookStatus;
+        this.available = available;
+    }
+
 }

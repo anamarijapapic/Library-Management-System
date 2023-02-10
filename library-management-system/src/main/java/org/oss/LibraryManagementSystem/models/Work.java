@@ -44,4 +44,11 @@ public class Work {
     )
     private Set<Category> categories;
 
+    public Work(String title, String description, Set<Author> authors, Set<Category> categories) {
+        this.title = title;
+        this.description = description;
+        this.authors = authors;
+        this.categories = categories;
+    }
+
 }
