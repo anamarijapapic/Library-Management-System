@@ -50,11 +50,11 @@ public class WorkServiceImpl implements WorkService {
         Category category;
 
         if (keyword != null && categoryName != null && !categoryName.equals("All categories")) {
-            category = categoryRepository.findByName(categoryName);
+            category = categoryRepository.findByNameIgnoreCase(categoryName);
             workPage = workRepository.findByCategoriesEqualsAndTitleContainingIgnoreCase(category, keyword, paging);
 
         } else if (categoryName != null && !categoryName.equals("All categories")) {
-            category = categoryRepository.findByName(categoryName);
+            category = categoryRepository.findByNameIgnoreCase(categoryName);
             workPage = workRepository.findByCategoriesEquals(category, paging);
 
         } else if (keyword != null) {
@@ -147,5 +147,5 @@ public class WorkServiceImpl implements WorkService {
 
         return work;
     }
-    
+
 }

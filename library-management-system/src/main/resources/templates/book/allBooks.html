@@ -131,7 +131,7 @@
                 <ul class="pagination">
                     <li class="page-item" th:if="${currentPage > 1}">
                         <a class="page-link"
-                           th:href="${workId == null ? '/books?' : '/works/' + ${workId} + '/books?'
+                           th:href="@{${workId == null ? '/books?' : '/works/' + workId + '/books?'}
                  + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
                  + ${statusName != null && statusName != '' ? 'statusName=' + statusName + '&' : ''}
                  + 'page=' + ${currentPage - 1} + '&size=' + ${pageSize}}"
@@ -141,7 +141,7 @@
                     </li>
                     <li class="page-item" th:if="${currentPage != totalPages}">
                         <a class="page-link"
-                           th:href="${workId == null ? '/books?' : '/works/' + ${workId} + '/books?'
+                           th:href="@{${workId == null ? '/books?' : '/works/' + workId + '/books?'}
                  + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
                  + ${statusName != null && statusName != '' ? 'statusName=' + statusName + '&' : ''}
                  + 'page=' + ${currentPage + 1} + '&size=' + ${pageSize}}"

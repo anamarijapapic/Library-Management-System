@@ -40,7 +40,7 @@ public class AuthorServiceImpl implements AuthorService {
         if (keyword == null) {
             authorPage = authorRepository.findAll(paging);
         } else {
-            authorPage = authorRepository.findByFirstNameContainingOrLastNameContaining(keyword, keyword, paging);
+            authorPage = authorRepository.findByFirstNameContainingOrLastNameContainingAllIgnoreCase(keyword, keyword, paging);
         }
 
         return authorPage;

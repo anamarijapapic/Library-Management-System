@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
             pageUsers = userRepository.findByRolesEquals(role, paging);
         } else if (keyword != null) {
             if (Objects.equals(currentUserRoles.get(0), "ADMIN")) {
-                pageUsers = userRepository.findByEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(keyword, keyword, keyword, paging);
+                pageUsers = userRepository.findByEmailContainingOrFirstNameContainingOrLastNameContainingAllIgnoreCase(keyword, keyword, keyword, paging);
             } else {
                 pageUsers = userRepository.findByRolesEqualsAndEmailContainingIgnoreCase(roleMember, keyword, paging);
             }

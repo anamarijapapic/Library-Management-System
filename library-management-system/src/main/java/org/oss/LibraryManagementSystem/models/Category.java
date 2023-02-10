@@ -23,4 +23,8 @@ public class Category {
     @NotNull(message = "name shouldn't be null")
     private String name;
 
+    public Category(String name) {
+        this.name = name;
+    }
+
 }
