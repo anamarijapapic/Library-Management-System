@@ -85,7 +85,7 @@ Library Management System is a web application that manages the library. It enab
 
 - Send "Welcome" mail to user when his account is created
 - Send "Loan Started" mail to member when he borrows a book
-- Send "Loan Ended" mail to member he returns a book 
+- Send "Loan Ended" mail to member when he returns a book 
 
 ## Technologies
 
