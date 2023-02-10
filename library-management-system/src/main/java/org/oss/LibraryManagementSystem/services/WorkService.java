@@ -9,12 +9,12 @@ public interface WorkService {
 
     Page<Work> getAllWorks(String keyword, String categoryName, int page, int size, String[] sort);
 
-    void deleteWorkById (Integer id);
+    void deleteWorkById(Integer id);
 
-    Work createWork (WorkPayload workPayload);
+    Work createWork(WorkPayload workPayload);
 
-    Work editWork (Integer id, WorkPayload workPayload);
+    Work editWork(Integer id, WorkPayload workPayload);
 
-    Page<Book> getBooksByWorkId (Integer workId, String keyword, String statusName, int page, int size);
+    Page<Book> getBooksByWorkId(Integer workId, String keyword, String statusName, int page, int size);
 
 }

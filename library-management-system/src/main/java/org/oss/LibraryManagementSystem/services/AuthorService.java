@@ -6,11 +6,12 @@ import org.springframework.data.domain.Page;
 
 public interface AuthorService {
 
-     Author createAuthor (AuthorPayload authorPayload);
+    Author createAuthor(AuthorPayload authorPayload);
 
-     Page<Author> getAllAuthors(String keyword, int page, int size, String[] sort);
+    Page<Author> getAllAuthors(String keyword, int page, int size, String[] sort);
 
-     void deleteAuthorById (Integer id);
+    void deleteAuthorById(Integer id);
 
-     Author editAuthor (Integer id, AuthorPayload authorPayload);
+    Author editAuthor(Integer id, AuthorPayload authorPayload);
+
 }

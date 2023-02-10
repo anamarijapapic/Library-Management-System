@@ -1,7 +1,10 @@
 package org.oss.LibraryManagementSystem.services;
 
 import org.oss.LibraryManagementSystem.dto.WorkPayload;
-import org.oss.LibraryManagementSystem.models.*;
+import org.oss.LibraryManagementSystem.models.Author;
+import org.oss.LibraryManagementSystem.models.Book;
+import org.oss.LibraryManagementSystem.models.Category;
+import org.oss.LibraryManagementSystem.models.Work;
 import org.oss.LibraryManagementSystem.repositories.AuthorRepository;
 import org.oss.LibraryManagementSystem.repositories.BookRepository;
 import org.oss.LibraryManagementSystem.repositories.CategoryRepository;
@@ -14,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
-
 
 @Service
 public class WorkServiceImpl implements WorkService {
@@ -36,13 +38,17 @@ public class WorkServiceImpl implements WorkService {
 
     @Override
     public Page<Work> getAllWorks(String keyword, String categoryName, int page, int size, String[] sort) {
-        String sortField = sort[0];
-        String sortDirection = sort[1];
-        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort.Order order = new Sort.Order(direction, sortField);
+        var sortField = sort[0];
+        var sortDirection = sort[1];
+        var direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        var order = new Sort.Order(direction, sortField);
+
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
+
         Page<Work> workPage;
-        Category category = null;
+
+        Category category;
+
         if (keyword != null && categoryName != null && !categoryName.equals("All categories")) {
             category = categoryRepository.findByName(categoryName);
             workPage = workRepository.findByCategoriesEqualsAndTitleContainingIgnoreCase(category, keyword, paging);
@@ -51,30 +57,31 @@ public class WorkServiceImpl implements WorkService {
             category = categoryRepository.findByName(categoryName);
             workPage = workRepository.findByCategoriesEquals(category, paging);
 
-        } else if (keyword != null){
+        } else if (keyword != null) {
             workPage = workRepository.findByTitleContainingIgnoreCase(keyword, paging);
-        }
-        else {
+        } else {
             workPage = workRepository.findAll(paging);
         }
+
         return workPage;
     }
 
     @Override
-    public Page<Book> getBooksByWorkId (Integer workId, String keyword, String statusName, int page, int size) {
+    public Page<Book> getBooksByWorkId(Integer workId, String keyword, String statusName, int page, int size) {
         Pageable paging = PageRequest.of(page - 1, size);
-        var work = workRepository.findById(workId).orElse(null);
+
         Page<Book> bookPage;
+
         if (keyword != null && statusName != null && !statusName.equals("All statuses")) {
-            bookPage = bookRepository.findByWorkIdAnAndBookStatusAndPublisherNameContainingAndIsbnContainingAllIgnoreCase(workId, statusName, keyword, keyword, paging);
+            bookPage = bookRepository.findByWorkIdAndBookStatusAndPublisherNameContainingAndIsbnContainingAllIgnoreCase(workId, statusName, keyword, keyword, paging);
         } else if (statusName != null && !statusName.equals("All statuses")) {
-            bookPage = bookRepository.findByWorkIdAnAndBookStatus(workId, statusName, paging);
+            bookPage = bookRepository.findByWorkIdAndBookStatus(workId, statusName, paging);
         } else if (keyword != null) {
-            bookPage = bookRepository.findByWorkAndPublisherNameContainingIgnoreCase(work, keyword, paging);
+            bookPage = bookRepository.findByWorkIdAndPublisherNameContainingIgnoreCase(workId, keyword, paging);
+        } else {
+            bookPage = bookRepository.findByWorkId(workId, paging);
         }
-        else {
-            bookPage = bookRepository.findByWork(work, paging);
-        }
+
         return bookPage;
     }
 
@@ -84,22 +91,27 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public Work createWork (WorkPayload workPayload){
+    public Work createWork(WorkPayload workPayload) {
         var work = new Work();
+
         work.setTitle(workPayload.getTitle());
         work.setDescription(workPayload.getDescription());
+
         Set<Author> authors = new HashSet<>();
         Set<Category> categories = new HashSet<>();
+
         var authorSet = workPayload.getAuthors();
         for (var authorId : authorSet) {
             var author = authorRepository.findById(authorId).orElse(null);
             authors.add(author);
         }
+
         var categorySet = workPayload.getCategories();
         for (var categoryId : categorySet) {
             var category = categoryRepository.findById(categoryId).orElse(null);
             categories.add(category);
         }
+
         work.setAuthors(authors);
         work.setCategories(categories);
 
@@ -107,27 +119,33 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public Work editWork (Integer id, WorkPayload workPayload){
+    public Work editWork(Integer id, WorkPayload workPayload) {
         var work = workRepository.findById(id).orElse(null);
 
         work.setId(workPayload.getId());
         work.setTitle(workPayload.getTitle());
         work.setDescription(workPayload.getDescription());
+
         Set<Author> authors = new HashSet<>();
         Set<Category> categories = new HashSet<>();
+
         var authorSetId = workPayload.getAuthors();
         var categorySetId = workPayload.getCategories();
+
         for (var authorId : authorSetId) {
             var author = authorRepository.findById(authorId).orElse(null);
             authors.add(author);
         }
+
         for (var categoryId : categorySetId) {
             var category = categoryRepository.findById(categoryId).orElse(null);
             categories.add(category);
         }
+
         work.setAuthors(authors);
         work.setCategories(categories);
 
         return work;
     }
+    
 }

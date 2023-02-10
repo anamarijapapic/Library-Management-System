@@ -5,16 +5,16 @@
     <th:block th:insert="~{fragments/head :: head}"></th:block>
 </head>
 <body>
-    <div class="d-flex align-items-center justify-content-center vh-100 bg-dark">
-        <div class="text-center">
-            <h1 th:text="${errorMsg}" class="display-1 fw-bold text-white"></h1>
-            <p class="lead fs-3 text-muted">
-                <span class="text-danger">Oops!</span>
-                Looks like there was a problem...
-                <i class="bi bi-emoji-frown-fill text-muted"></i>
-            </p>
-            <a th:href="@{/}" class="btn btn-lg btn-secondary mt-3">Go to homepage</a>
-        </div>
+<div class="d-flex align-items-center justify-content-center vh-100 bg-dark">
+    <div class="text-center">
+        <h1 class="display-1 fw-bold text-white" th:text="${errorMsg}"></h1>
+        <p class="lead fs-3 text-muted">
+            <span class="text-danger">Oops!</span>
+            Looks like there was a problem...
+            <i class="bi bi-emoji-frown-fill text-muted"></i>
+        </p>
+        <a class="btn btn-lg btn-secondary mt-3" th:href="@{/}">Go to homepage</a>
     </div>
+</div>
 </body>
 </html>

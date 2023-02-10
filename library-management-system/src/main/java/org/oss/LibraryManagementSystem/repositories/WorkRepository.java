@@ -8,11 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkRepository extends JpaRepository<Work, Integer> {
 
-    Page<Work> findAll (Pageable pageable);
+    Page<Work> findAll(Pageable pageable);
 
-    Page<Work> findByTitleContainingIgnoreCase (String title, Pageable pageable);
+    Page<Work> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
-    Page<Work> findByCategoriesEquals (Category category, Pageable pageable);
+    Page<Work> findByCategoriesEquals(Category category, Pageable pageable);
 
     Page<Work> findByCategoriesEqualsAndTitleContainingIgnoreCase(Category category, String title, Pageable pageable);
+
 }

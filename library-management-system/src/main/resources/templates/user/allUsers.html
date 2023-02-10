@@ -1,263 +1,270 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Library Management System - Users</title>
-  <th:block th:insert="~{fragments/head :: head}"></th:block>
+    <title>Library Management System - Users</title>
+    <th:block th:insert="~{fragments/head :: head}"></th:block>
 </head>
 <body>
-  <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+<th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
 
-  <div class="container">
+<div class="container">
     <h1 class="display-2 text-center mt-2">Users</h1>
 
     <div class="d-flex justify-content-end my-2">
-      <a class="btn btn-lg btn-primary" th:href="@{/users/myDetails}" role="button">My Details</a>
+        <a class="btn btn-lg btn-primary" role="button" th:href="@{/users/myDetails}">My Details</a>
     </div>
 
     <div class="d-flex justify-content-end my-2">
-      <a class="btn btn-lg btn-success" th:href="@{/users/add}" title="Add User">
-        <i class="bi bi-person-fill-add"></i>
-      </a>
+        <a class="btn btn-lg btn-success" th:href="@{/users/add}" title="Add User">
+            <i class="bi bi-person-fill-add"></i>
+        </a>
     </div>
 
     <div class="mt-2" th:if="${users.size() > 0}">
-      <form th:action="@{/users}" id="searchForm">
-        <div class="input-group my-3">
-          <input type="search" class="form-control" id="keyword" name="keyword"
-                 placeholder="Search users..." th:value="${keyword}"
-          >
-          <button type="submit" class="btn btn-outline-secondary" title="Search">
-            <i class="bi bi-search"></i>
-          </button>
-        </div>
-
-        <div class="row g-2 my-3">
-          <div th:if="${currentUserRole == 'ADMIN'}" class="col-sm">
-            <div class="form-floating">
-              <select class="form-select" id="roleName" name="roleName"
-                      th:value="${roleName}" onchange="changeRoleName()"
-              >
-                <option selected disabled>All roles</option>
-                <option th:each="role: ${roleOptions}"
-                        th:value="${role.name}"
-                        th:text="${role.name}"
-                        th:selected="${role.name == roleName}"
-                ></option>
-              </select>
-              <label for="roleName">Filter by role</label>
+        <form id="searchForm" th:action="@{/users}">
+            <div class="input-group my-3">
+                <input class="form-control" id="keyword" name="keyword" placeholder="Search users..."
+                       th:value="${keyword}" type="search"
+                >
+                <button class="btn btn-outline-secondary" title="Search" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
             </div>
-          </div>
 
-          <div class="col-sm">
-            <div class="form-floating">
-              <select class="form-select" id="pageSize" name="size"
-                      th:value="${pageSize}" onchange="changePageSize()"
-              >
-                <option th:value="3" th:text="3" th:selected="${3 == pageSize}"></option>
-                <option th:value="6" th:text="6" th:selected="${6 == pageSize}"></option>
-                <option th:value="9" th:text="9" th:selected="${9 == pageSize}"></option>
-              </select>
-              <label for="pageSize">Items per page</label>
+            <div class="row g-2 my-3">
+                <div class="col-sm" th:if="${currentUserRole == 'ADMIN'}">
+                    <div class="form-floating">
+                        <select class="form-select" id="roleName" name="roleName"
+                                onchange="changeRoleName()" th:value="${roleName}"
+                        >
+                            <option disabled selected>All roles</option>
+                            <option th:each="role: ${roleOptions}"
+                                    th:selected="${role.name == roleName}"
+                                    th:text="${role.name}"
+                                    th:value="${role.name}"
+                            ></option>
+                        </select>
+                        <label for="roleName">Filter by role</label>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-floating">
+                        <select class="form-select" id="pageSize" name="size"
+                                onchange="changePageSize()" th:value="${pageSize}"
+                        >
+                            <option th:selected="${3 == pageSize}" th:text="3" th:value="3"></option>
+                            <option th:selected="${6 == pageSize}" th:text="6" th:value="6"></option>
+                            <option th:selected="${9 == pageSize}" th:text="9" th:value="9"></option>
+                        </select>
+                        <label for="pageSize">Items per page</label>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <button id="btnClear" class="btn btn-secondary">Clear selection</button>
-      </form>
+            <button class="btn btn-secondary" id="btnClear">Clear selection</button>
+        </form>
 
-      <div class="table-responsive mt-4">
-        <table class="table table-hover align-middle">
-          <thead class="table-light">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">
-                <a th:href="@{'/users?' + ${keyword != null && keyword != ''? 'keyword=' + keyword + '&' : ''}
+        <div class="table-responsive mt-4">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">
+                        <a class="text-decoration-none text-dark"
+                           th:href="@{'/users?' + ${keyword != null && keyword != ''? 'keyword=' + keyword + '&' : ''}
                         + 'page=' + ${currentPage} + '&size=' + ${pageSize}
                         + ${sortField != null ? '&sort=' + 'firstName' + ',' + (sortField == 'firstName' ? reverseSortDirection : sortDirection) : ''}}"
-                   class="text-decoration-none text-dark"
-                >
-                  First Name
-                  <i th:if="${(sortField == 'firstName' && sortDirection == 'asc') || sortField != 'firstName'}"
-                     class="bi bi-sort-up"
-                  ></i>
-                  <i th:if="${sortField == 'firstName' && sortDirection == 'desc'}" class="bi bi-sort-down"></i>
-                </a>
-              </th>
-              <th scope="col">
-                <a th:href="@{'/users?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
+                        >
+                            First Name
+                            <i class="bi bi-sort-up"
+                               th:if="${(sortField == 'firstName' && sortDirection == 'asc') || sortField != 'firstName'}"
+                            ></i>
+                            <i class="bi bi-sort-down"
+                               th:if="${sortField == 'firstName' && sortDirection == 'desc'}"></i>
+                        </a>
+                    </th>
+                    <th scope="col">
+                        <a class="text-decoration-none text-dark"
+                           th:href="@{'/users?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
                         + 'page=' + ${currentPage} + '&size=' + ${pageSize}
                         + ${sortField != null ? '&sort=' + 'lastName' + ',' + (sortField == 'lastName' ? reverseSortDirection : sortDirection) : ''}}"
-                   class="text-decoration-none text-dark"
-                >
-                  Last Name
-                  <i th:if="${(sortField == 'lastName' && sortDirection == 'asc') || sortField != 'lastName'}"
-                     class="bi bi-sort-up"
-                  ></i>
-                  <i th:if="${sortField == 'lastName' && sortDirection == 'desc'}" class="bi bi-sort-down"></i>
-                </a>
-              </th>
-              <th scope="col">E-mail</th>
-              <th scope="col">
-                <a th:href="@{'/users?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
+                        >
+                            Last Name
+                            <i class="bi bi-sort-up"
+                               th:if="${(sortField == 'lastName' && sortDirection == 'asc') || sortField != 'lastName'}"
+                            ></i>
+                            <i class="bi bi-sort-down"
+                               th:if="${sortField == 'lastName' && sortDirection == 'desc'}"></i>
+                        </a>
+                    </th>
+                    <th scope="col">E-mail</th>
+                    <th scope="col">
+                        <a class="text-decoration-none text-dark"
+                           th:href="@{'/users?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
                         + 'page=' + ${currentPage} + '&size=' + ${pageSize}
                         + ${sortField != null ? '&sort=' + 'dateOfBirth' + ',' + (sortField == 'dateOfBirth' ? reverseSortDirection : sortDirection) : ''}}"
-                   class="text-decoration-none text-dark"
-                >
-                  Date of Birth
-                  <i th:if="${(sortField == 'dateOfBirth' && sortDirection == 'asc') || sortField != 'dateOfBirth'}"
-                     class="bi bi-sort-up"
-                  ></i>
-                  <i th:if="${sortField == 'dateOfBirth' && sortDirection == 'desc'}" class="bi bi-sort-down"></i>
-                </a>
-              </th>
-              <th scope="col">Contact Number</th>
-              <th scope="col">Role</th>
-              <th scope="col">Action</th>
-              <th scope="col">Loans</th>
-            </tr>
-          </thead>
-          <tbody class="table-group-divider">
-            <tr th:each="user : ${users}">
-              <th scope="row" th:text="${user.id}"></th>
-              <td th:text="${user.firstName}"></td>
-              <td th:text="${user.lastName}"></td>
-              <td><a th:href="'mailto:' + ${user.email}" th:text="${user.email}"></a></td>
-              <td th:text="${user.dateOfBirth}"></td>
-              <td><a th:href="'tel:' + ${user.contactNumber}" th:text="${user.contactNumber}"></a></td>
-              <td th:each="role : ${user.roles}">
-                <span th:text="${role.name}"></span>
-              </td>
-              <td>
-                <a class="btn btn-primary" th:href="@{/users/{userId}(userId=${user.id})}" role="button"
-                   title="User Details"
-                >
-                  <i class="bi bi-person-lines-fill"></i>
-                </a>
-                <a class="btn btn-warning" th:href="@{/users/{userId}/edit(userId=${user.id})}"
-                  title="Edit User"
-                >
-                  <i class="bi bi-person-fill-gear"></i>
-                </a>
-                <a th:if="${currentUserRole == 'ADMIN' && #authentication.name != user.email}" class="btn btn-danger btnDelete"
-                   th:href="@{/users/{userId}/delete(userId=${user.id})}"
-                   th:userEmail="${user.email}"
-                   th:userFirstName="${user.firstName}"
-                   th:userLastName="${user.lastName}"
-                   role="button" title="Delete User"
-                >
-                  <i class="bi bi-person-fill-dash"></i>
-                </a>
-              </td>
-              <td>
-                <div th:if="${user.roles.stream().findFirst().get().getName() == 'MEMBER'}">
-                  <a class="btn btn-primary" th:href="@{/loans/{memberId}/current(memberId=${user.id})}" role="button"
-                     title="Current Loans"
-                  >
-                    Current Loans
-                  </a>
-                  <a class="btn btn-primary" th:href="@{/loans/{memberId}/previous(memberId=${user.id})}" role="button"
-                     title="Previous Loans"
-                  >
-                    Previous Loans
-                  </a>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                        >
+                            Date of Birth
+                            <i class="bi bi-sort-up"
+                               th:if="${(sortField == 'dateOfBirth' && sortDirection == 'asc') || sortField != 'dateOfBirth'}"
+                            ></i>
+                            <i class="bi bi-sort-down"
+                               th:if="${sortField == 'dateOfBirth' && sortDirection == 'desc'}"></i>
+                        </a>
+                    </th>
+                    <th scope="col">Contact Number</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Action</th>
+                    <th scope="col">Loans</th>
+                </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                <tr th:each="user : ${users}">
+                    <th scope="row" th:text="${user.id}"></th>
+                    <td th:text="${user.firstName}"></td>
+                    <td th:text="${user.lastName}"></td>
+                    <td><a th:href="'mailto:' + ${user.email}" th:text="${user.email}"></a></td>
+                    <td th:text="${user.dateOfBirth}"></td>
+                    <td><a th:href="'tel:' + ${user.contactNumber}" th:text="${user.contactNumber}"></a></td>
+                    <td th:each="role : ${user.roles}">
+                        <span th:text="${role.name}"></span>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" role="button" th:href="@{/users/{userId}(userId=${user.id})}"
+                           title="User Details"
+                        >
+                            <i class="bi bi-person-lines-fill"></i>
+                        </a>
+                        <a class="btn btn-warning" th:href="@{/users/{userId}/edit(userId=${user.id})}"
+                           title="Edit User"
+                        >
+                            <i class="bi bi-person-fill-gear"></i>
+                        </a>
+                        <a class="btn btn-danger btnDelete"
+                           role="button"
+                           th:href="@{/users/{userId}/delete(userId=${user.id})}"
+                           th:if="${currentUserRole == 'ADMIN' && #authentication.name != user.email}"
+                           th:userEmail="${user.email}"
+                           th:userFirstName="${user.firstName}"
+                           th:userLastName="${user.lastName}" title="Delete User"
+                        >
+                            <i class="bi bi-person-fill-dash"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <div th:if="${user.roles.stream().findFirst().get().getName() == 'MEMBER'}">
+                            <a class="btn btn-primary" role="button"
+                               th:href="@{/loans/{memberId}/current(memberId=${user.id})}"
+                               title="Current Loans"
+                            >
+                                Current Loans
+                            </a>
+                            <a class="btn btn-primary" role="button"
+                               th:href="@{/loans/{memberId}/previous(memberId=${user.id})}"
+                               title="Previous Loans"
+                            >
+                                Previous Loans
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-      <div class="d-flex justify-content-center">
-        <nav aria-label="Page navigation">
-          <ul class="pagination">
-            <li class="page-item" th:if="${currentPage > 1}">
-              <a class="page-link"
-                 th:href="@{'/users?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
+        <div class="d-flex justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item" th:if="${currentPage > 1}">
+                        <a class="page-link"
+                           th:href="@{'/users?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
                     + ${roleName != null && roleName != 'All users' && roleName != '' ? 'roleName=' + roleName + '&' : ''}
                     + 'page=' + ${currentPage - 1} + '&size=' + ${pageSize}
                     + ${sortField != null && sortDirection != '' ? '&sort=' + sortField + ',' + sortDirection : ''}}"
-              >
-                Previous
-              </a>
-            </li>
-            <li class="page-item" th:if="${currentPage != totalPages}">
-              <a class="page-link"
-                 th:href="@{'/users?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
+                        >
+                            Previous
+                        </a>
+                    </li>
+                    <li class="page-item" th:if="${currentPage != totalPages}">
+                        <a class="page-link"
+                           th:href="@{'/users?' + ${keyword != null && keyword != '' ? 'keyword=' + keyword + '&' : ''}
                  + ${roleName != null && roleName != 'All users' && roleName != '' ? 'roleName=' + roleName + '&' : ''}
                  + 'page=' + ${currentPage + 1} + '&size=' + ${pageSize}
                  + ${sortField != null && sortDirection != '' ? '&sort=' + sortField + ',' + sortDirection : ''}}">
-                Next
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 
     <div th:unless="${users.size() > 0}">
-      <p class="lead text-center">
-        No users found!
-      </p>
-      <div class="d-flex justify-content-center">
-        <a class="btn btn-lg btn-secondary" th:href="@{'/users'}" role="button">Back</a>
-      </div>
+        <p class="lead text-center">
+            No users found!
+        </p>
+        <div class="d-flex justify-content-center">
+            <a class="btn btn-lg btn-secondary" role="button" th:href="@{'/users'}">Back</a>
+        </div>
     </div>
-  </div>
+</div>
 
-  <div class="modal py-5" tabindex="-1" role="dialog" id="deleteModal">
+<div class="modal py-5" id="deleteModal" role="dialog" tabindex="-1">
     <div class="modal-dialog" role="document">
-      <div class="modal-content rounded-4 shadow">
-        <div class="modal-header border-bottom-0">
-          <h1 class="modal-title fs-5">Confirm Delete</h1>
-          <button type="button" class="btn-close noBtn" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header border-bottom-0">
+                <h1 class="modal-title fs-5">Confirm Delete</h1>
+                <button aria-label="Close" class="btn-close noBtn" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body py-0">
+                <p><span id="confirmText"></span></p>
+            </div>
+            <div class="modal-footer flex-column border-top-0">
+                <a class="btn btn-lg btn-danger w-100 mx-0 mb-2" id="yesBtn" type="button">Delete user</a>
+                <button class="btn btn-lg btn-light w-100 mx-0 noBtn" data-bs-dismiss="modal" type="button">Close
+                </button>
+            </div>
         </div>
-        <div class="modal-body py-0">
-          <p><span id="confirmText"></span></p>
-        </div>
-        <div class="modal-footer flex-column border-top-0">
-          <a type="button" id="yesBtn" class="btn btn-lg btn-danger w-100 mx-0 mb-2">Delete user</a>
-          <button type="button" class="btn btn-lg btn-light w-100 mx-0 noBtn" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  <div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
-  <script type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function () {
 
-      $(".btnDelete").on("click", function (e) {
-        e.preventDefault();
-        let href = $(this).attr("href");
-        let userEmail = $(this).attr("userEmail");
-        let userFirstName = $(this).attr("userFirstName");
-        let userLastName = $(this).attr("userLastName");
-        $("#confirmText").html("Are you sure you want to delete user: \<b\>" + userFirstName + " " + userLastName + " (" + userEmail + ")\<\/b\>?");
-        $('#deleteModal #yesBtn').attr('href', href);
-        $("#deleteModal").show();
-      });
+        $(".btnDelete").on("click", function (e) {
+            e.preventDefault();
+            let href = $(this).attr("href");
+            let userEmail = $(this).attr("userEmail");
+            let userFirstName = $(this).attr("userFirstName");
+            let userLastName = $(this).attr("userLastName");
+            $("#confirmText").html("Are you sure you want to delete user: \<b\>" + userFirstName + " " + userLastName + " (" + userEmail + ")\<\/b\>?");
+            $('#deleteModal #yesBtn').attr('href', href);
+            $("#deleteModal").show();
+        });
 
-      $(".noBtn").on("click", function (e) {
-        e.preventDefault();
-        $("#deleteModal").hide();
-      });
+        $(".noBtn").on("click", function (e) {
+            e.preventDefault();
+            $("#deleteModal").hide();
+        });
 
-      $("#btnClear").on("click", function (e) {
-        e.preventDefault();
-        $("#keyword").text("");
-        window.location = "[[@{/users}]]";
-      });
+        $("#btnClear").on("click", function (e) {
+            e.preventDefault();
+            $("#keyword").text("");
+            window.location = "[[@{/users}]]";
+        });
 
     });
 
     function changePageSize() {
-      $("#searchForm").submit();
+        $("#searchForm").submit();
     }
 
     function changeRoleName() {
-      $("#searchForm").submit();
+        $("#searchForm").submit();
     }
-  </script>
+</script>
 </body>
 </html>

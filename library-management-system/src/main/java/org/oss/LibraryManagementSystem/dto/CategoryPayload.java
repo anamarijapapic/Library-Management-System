@@ -12,4 +12,5 @@ public class CategoryPayload {
     private Integer id;
 
     private String name;
+
 }

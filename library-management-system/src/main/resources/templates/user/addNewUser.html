@@ -1,74 +1,75 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Library Management System - Add User</title>
-  <th:block th:insert="~{fragments/head :: head}"></th:block>
+    <title>Library Management System - Add User</title>
+    <th:block th:insert="~{fragments/head :: head}"></th:block>
 </head>
 <body>
-  <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+<th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
 
-  <div class="container">
+<div class="container">
     <h1 class="display-2 text-center mt-2">Add User</h1>
 
-    <form th:action="@{/users/saveUser}" method="POST" class="my-4">
-      <div class="row mb-3">
-        <label for="firstName" class="col-sm-2 col-form-label">First Name</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="firstName" th:field="*{userPayload.firstName}" required>
+    <form class="my-4" method="POST" th:action="@{/users/saveUser}">
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="firstName">First Name</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="firstName" required th:field="*{userPayload.firstName}" type="text">
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="lastName" class="col-sm-2 col-form-label">Last Name</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="lastName" th:field="*{userPayload.lastName}" required>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="lastName">Last Name</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="lastName" required th:field="*{userPayload.lastName}" type="text">
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="email" class="col-sm-2 col-form-label">E-mail</label>
-        <div class="col-sm-10">
-          <input type="email" class="form-control" id="email" th:field="*{userPayload.email}" required>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="email">E-mail</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="email" required th:field="*{userPayload.email}" type="email">
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="contactNumber" class="col-sm-2 col-form-label">Contact Number</label>
-        <div class="col-sm-10">
-          <input type="tel" class="form-control" id="contactNumber" th:field="*{userPayload.contactNumber}" required>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="contactNumber">Contact Number</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="contactNumber" required th:field="*{userPayload.contactNumber}"
+                       type="tel">
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="dateOfBirth" class="col-sm-2 col-form-label">Date of Birth</label>
-        <div class="col-sm-10">
-          <input type="date" class="form-control" id="dateOfBirth" th:field="*{userPayload.dateOfBirth}" required>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="dateOfBirth">Date of Birth</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="dateOfBirth" required th:field="*{userPayload.dateOfBirth}" type="date">
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="role" class="col-sm-2 col-form-label">Role</label>
-        <div class="col-sm-10">
-          <select class="form-select" id="role" th:field="*{userPayload.userRole}">
-            <option th:each="option: ${roleOptions}"
-                    th:if="${(#authorization.expression('hasAuthority(''LIBRARIAN'')') and option.name == 'MEMBER') or #authorization.expression('hasAuthority(''ADMIN'')')}"
-                    th:value="${option.name}" th:text="${option.name}"
-            ></option>
-          </select>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="role">Role</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="role" th:field="*{userPayload.userRole}">
+                    <option th:each="option: ${roleOptions}"
+                            th:if="${(#authorization.expression('hasAuthority(''LIBRARIAN'')') and option.name == 'MEMBER') or #authorization.expression('hasAuthority(''ADMIN'')')}"
+                            th:text="${option.name}" th:value="${option.name}"
+                    ></option>
+                </select>
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="password" class="col-sm-2 col-form-label">Password</label>
-        <div class="col-sm-10">
-          <input type="password" class="form-control" id="password" th:field="*{userPayload.password}" required>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="password">Password</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="password" required th:field="*{userPayload.password}" type="password">
+            </div>
         </div>
-      </div>
 
-      <button type="submit" class="btn btn-lg btn-success">Add user</button>
+        <button class="btn btn-lg btn-success" type="submit">Add user</button>
     </form>
 
     <a th:href="@{/users}">Back to all users</a>
-  </div>
+</div>
 
-  <div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
-  <script type="text/javascript">
+<script type="text/javascript">
     dateOfBirth.max = new Date().toISOString().split("T")[0];
-  </script>
+</script>
 </body>
 </html>

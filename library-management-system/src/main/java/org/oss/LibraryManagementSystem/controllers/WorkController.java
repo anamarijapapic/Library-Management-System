@@ -16,7 +16,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @Controller
 @RequestMapping("/works")
 public class WorkController {
@@ -29,7 +28,7 @@ public class WorkController {
 
     private final CategoryRepository categoryRepository;
 
-    public WorkController(WorkService workService, WorkRepository workRepository, AuthorRepository authorRepository, CategoryRepository categoryRepository){
+    public WorkController(WorkService workService, WorkRepository workRepository, AuthorRepository authorRepository, CategoryRepository categoryRepository) {
         this.workService = workService;
         this.workRepository = workRepository;
         this.authorRepository = authorRepository;
@@ -37,31 +36,33 @@ public class WorkController {
     }
 
     @GetMapping
-    public String getAllWorks(Model model,
-                              @RequestParam(required = false) String keyword,
-                              @RequestParam(required = false) String categoryName,
-                              @RequestParam(defaultValue = "1") int page,
-                              @RequestParam(defaultValue = "3") int size,
-                              @RequestParam(defaultValue = "id,asc") String[] sort) {
+    public String getAllWorks(Model model, @RequestParam(required = false) String keyword, @RequestParam(required = false) String categoryName, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size, @RequestParam(defaultValue = "id,asc") String[] sort) {
         var pageWorks = workService.getAllWorks(keyword, categoryName, page, size, sort);
         var works = pageWorks.getContent();
+
+        var categories = categoryRepository.findAll();
+
         var sortField = sort[0];
         var sortDirection = sort[1];
-        var categories = categoryRepository.findAll();
+
         model.addAttribute("works", works);
+
+        model.addAttribute("categoryOptions", categories);
+
         model.addAttribute("currentPage", pageWorks.getNumber() + 1);
         model.addAttribute("totalItems", pageWorks.getTotalElements());
         model.addAttribute("totalPages", pageWorks.getTotalPages());
         model.addAttribute("pageSize", size);
-        model.addAttribute("sortField", sortField );
+
+        model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
-        model.addAttribute("categoryOptions", categories);
-        if (keyword != null)
-            model.addAttribute("keyword", keyword);
-        if (categoryName != null){
+
+        if (keyword != null) model.addAttribute("keyword", keyword);
+        if (categoryName != null) {
             model.addAttribute("categoryName", categoryName);
         }
+
         return "work/allWorks";
     }
 
@@ -69,58 +70,58 @@ public class WorkController {
     @GetMapping("/add")
     public String addNewWork(Model model, WorkPayload workPayload) {
         var authors = authorRepository.findAll();
-        var categories =  categoryRepository.findAll();
+        var categories = categoryRepository.findAll();
+
         model.addAttribute("workPayload", workPayload);
         model.addAttribute("authorOptions", authors);
         model.addAttribute("categoryOptions", categories);
+
         return "work/addNewWork";
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @PostMapping("/saveWork")
-    public RedirectView saveNewWork(@ModelAttribute("workPayload") WorkPayload workPayload){
+    public RedirectView saveNewWork(@ModelAttribute("workPayload") WorkPayload workPayload) {
         var work = workService.createWork(workPayload);
         workRepository.save(work);
+
         return new RedirectView("/works");
     }
 
     @GetMapping("/{id}/books")
-    public String getBooksByWork (Model model,
-                                  @PathVariable("id") Integer id,
-                                  @RequestParam(required = false) String keyword,
-                                  @RequestParam(required = false) String statusName,
-                                  @RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "3") int size) {
-        var work = workRepository.findById(id).orElse(null);
+    public String getBooksByWork(Model model, @PathVariable("id") Integer id, @RequestParam(required = false) String keyword, @RequestParam(required = false) String statusName, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size) {
         var bookPage = workService.getBooksByWorkId(id, keyword, statusName, page, size);
         var books = bookPage.getContent();
+        var work = workRepository.findById(id).orElse(null);
         var statusOptions = Status.values();
-        if (work != null)
-            model.addAttribute("work", work);
-        model.addAttribute("workId", id);
+
         model.addAttribute("books", books);
+        if (work != null) model.addAttribute("work", work);
+        model.addAttribute("workId", id);
+        model.addAttribute("statusOptions", statusOptions);
+
         model.addAttribute("currentPage", bookPage.getNumber() + 1);
         model.addAttribute("totalItems", bookPage.getTotalElements());
         model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("pageSize", size);
-        model.addAttribute("statusOptions", statusOptions);
-        if (keyword != null)
-            model.addAttribute("keyword", keyword);
-        if (statusName != null)
-            model.addAttribute("statusName", statusName);
+
+        if (keyword != null) model.addAttribute("keyword", keyword);
+        if (statusName != null) model.addAttribute("statusName", statusName);
+
         return "book/allBooks";
     }
 
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}/delete")
-    public String deleteWork (@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+    public String deleteWork(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             workService.deleteWorkById(id);
             redirectAttributes.addFlashAttribute("message", "The work with id=" + id + " has been deleted successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
+
         return "redirect:/works";
     }
 
@@ -132,6 +133,7 @@ public class WorkController {
         var work = workRepository.findById(id).orElse(null);
         var workAuthors = work.getAuthors();
         var workCategory = work.getCategories();
+
         Set<Integer> authorsId = new HashSet<>();
         Set<Integer> categoriesId = new HashSet<>();
         for (var author : workAuthors) {
@@ -144,14 +146,16 @@ public class WorkController {
         model.addAttribute("workPayload", new WorkPayload(work.getId(), work.getTitle(), work.getDescription(), authorsId, categoriesId));
         model.addAttribute("authorOptions", authors);
         model.addAttribute("categoryOptions", categories);
+
         return "work/editWork";
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @PostMapping("/updateWork")
-    public RedirectView updateWork(@ModelAttribute("workPayload") WorkPayload workPayload){
+    public RedirectView updateWork(@ModelAttribute("workPayload") WorkPayload workPayload) {
         var work = workService.editWork(workPayload.getId(), workPayload);
         workRepository.save(work);
+
         return new RedirectView("/works");
     }
 

@@ -26,10 +26,12 @@ import java.util.Set;
 @Getter
 @Service
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
-    public UserServiceImpl (UserRepository userRepository, RoleRepository roleRepository){
+
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
     }
@@ -38,18 +40,23 @@ public class UserServiceImpl implements UserService {
     public Page<User> getAllUsers(Authentication authentication, String keyword, String roleName, int page, int size, String[] sort) {
         var currentUser = userRepository.findByEmail(authentication.getName());
         var currentUserRoles = new ArrayList<String>();
-        for (var role : currentUser.getRoles()){
+        for (var role : currentUser.getRoles()) {
             currentUserRoles.add(role.getName());
         }
-        String sortField = sort[0];
-        String sortDirection = sort[1];
-        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort.Order order = new Sort.Order(direction, sortField);
+
+        var sortField = sort[0];
+        var sortDirection = sort[1];
+        var direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        var order = new Sort.Order(direction, sortField);
+
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
+
         Page<User> pageUsers;
 
         var roleMember = roleRepository.findByName("MEMBER");
+
         Role role = null;
+
         if (keyword != null && roleName != null && !roleName.equals("All roles")) {
             role = Objects.equals(currentUserRoles.get(0), "ADMIN") ? roleRepository.findByName(roleName) : roleMember;
             pageUsers = userRepository.findByRolesEqualsAndEmailContainingIgnoreCase(role, keyword, paging);
@@ -63,49 +70,54 @@ public class UserServiceImpl implements UserService {
                 pageUsers = userRepository.findByRolesEqualsAndEmailContainingIgnoreCase(roleMember, keyword, paging);
             }
         } else {
-            pageUsers = Objects.equals(currentUserRoles.get(0), "ADMIN")
-                    ? userRepository.findAll(paging)
-                    : userRepository.findByRolesEquals(roleMember, paging);
+            pageUsers = Objects.equals(currentUserRoles.get(0), "ADMIN") ? userRepository.findAll(paging) : userRepository.findByRolesEquals(roleMember, paging);
         }
 
         return pageUsers;
     }
 
     @Override
-    public User getUser (Integer id){
+    public User getUser(Integer id) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var currentUser = userRepository.findByEmail(authentication.getName());
         var currentUserRoles = new ArrayList<String>();
-        for (var role : currentUser.getRoles()){
+
+        for (var role : currentUser.getRoles()) {
             currentUserRoles.add(role.getName());
         }
+
         var user = userRepository.findById(id).orElse(null);
         var userRoles = new ArrayList<String>();
-        for (var role : user.getRoles()){
+
+        for (var role : user.getRoles()) {
             userRoles.add(role.getName());
         }
-        if(Objects.equals(currentUserRoles.get(0), "LIBRARIAN") & (Objects.equals(userRoles.get(0), "ADMIN") || (Objects.equals(userRoles.get(0), "LIBRARIAN")))) {
+
+        if (Objects.equals(currentUserRoles.get(0), "LIBRARIAN") & (Objects.equals(userRoles.get(0), "ADMIN") || (Objects.equals(userRoles.get(0), "LIBRARIAN")))) {
             return null;
         }
-        else
-            return user;
+
+        return user;
     }
 
     @Override
-    public User currentUserDetails (){
+    public User currentUserDetails() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
+
         return userRepository.findByEmail(authentication.getName());
     }
 
     @Override
-    public void deleteUserById (Integer id){
+    public void deleteUserById(Integer id) {
         userRepository.findById(id).ifPresent(userRepository::delete);
     }
 
     @Override
-    public User createUser (UserPayload userPayload) throws ParseException {
+    public User createUser(UserPayload userPayload) throws ParseException {
         var bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
         var user = new User();
+
         user.setFirstName(userPayload.getFirstName());
         user.setLastName(userPayload.getLastName());
         user.setEmail(userPayload.getEmail());
@@ -116,7 +128,7 @@ public class UserServiceImpl implements UserService {
         roles.add(roleUser);
         user.setRoles(roles);
 
-        if (userPayload.getPassword() != null){
+        if (userPayload.getPassword() != null) {
             var encodedPassword = bCryptPasswordEncoder.encode(userPayload.getPassword());
             user.setPassword(encodedPassword);
         }
@@ -124,16 +136,15 @@ public class UserServiceImpl implements UserService {
         var date = userPayload.getDateOfBirth();
         var timestamp = new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse(date.toString()).getTime());
         user.setDateOfBirth(timestamp);
+
         user.setEnabled(true);
 
         return user;
     }
 
     @Override
-    public User editUser (Integer id, UserPayload userPayload) throws ParseException {
+    public User editUser(Integer id, UserPayload userPayload) throws ParseException {
         var user = userRepository.findById(id).orElse(null);
-
-        var bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
         user.setId(userPayload.getId());
         user.setFirstName(userPayload.getFirstName());
@@ -151,6 +162,7 @@ public class UserServiceImpl implements UserService {
         var date = userPayload.getDateOfBirth();
         var timestamp = new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse(date.toString()).getTime());
         user.setDateOfBirth(timestamp);
+
         user.setEnabled(true);
 
         return user;

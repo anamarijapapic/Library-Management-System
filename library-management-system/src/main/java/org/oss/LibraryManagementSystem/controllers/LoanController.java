@@ -16,10 +16,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-
 @Controller
 @RequestMapping("/loans")
 public class LoanController {
+
     private final LoanRepository loanRepository;
 
     private final LoanService loanService;
@@ -30,7 +30,7 @@ public class LoanController {
 
     private final RoleRepository roleRepository;
 
-    public LoanController(LoanRepository loanRepository, LoanService loanService, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository){
+    public LoanController(LoanRepository loanRepository, LoanService loanService, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository) {
         this.loanRepository = loanRepository;
         this.loanService = loanService;
         this.userRepository = userRepository;
@@ -47,6 +47,7 @@ public class LoanController {
         var book = bookRepository.findById(bookId).orElse(null);
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var librarian = userRepository.findByEmail(authentication.getName());
+
         model.addAttribute("librarian", librarian);
         model.addAttribute("memberOptions", members);
         model.addAttribute("loanPayload", loanPayload);
@@ -67,11 +68,7 @@ public class LoanController {
         mailSender.setUsername("");
         mailSender.setPassword("");
 
-        var messageText = "<h1>Loan Started</h1>"
-                + "<p>"
-                + "Book <b>" + loan.getBook().getWork().getTitle() + "</b>"
-                + " was issued on your name on date <b>" + loan.getDateIssued() + "</b>."
-                + "</p>";
+        var messageText = "<h1>Loan Started</h1>" + "<p>" + "Book <b>" + loan.getBook().getWork().getTitle() + "</b>" + " was issued on your name on date <b>" + loan.getDateIssued() + "</b>." + "</p>";
 
         var props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
@@ -100,11 +97,7 @@ public class LoanController {
         mailSender.setUsername("");
         mailSender.setPassword("");
 
-        var messageText = "<h1>Loan Ended</h1>"
-                + "<p>"
-                + "You returned book <b>" + loan.getBook().getWork().getTitle() + "</b>"
-                + " on date <b>" + loan.getDateReturned() + "</b>."
-                + "</p>";
+        var messageText = "<h1>Loan Ended</h1>" + "<p>" + "You returned book <b>" + loan.getBook().getWork().getTitle() + "</b>" + " on date <b>" + loan.getDateReturned() + "</b>." + "</p>";
 
         var props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
@@ -124,23 +117,25 @@ public class LoanController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @GetMapping
-    public String getAllLoans(Model model,
-                              @RequestParam(defaultValue = "1") int page,
-                              @RequestParam(defaultValue = "3") int size,
-                              @RequestParam(defaultValue = "id,asc") String[] sort) {
+    public String getAllLoans(Model model, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size, @RequestParam(defaultValue = "id,asc") String[] sort) {
         var pageLoans = loanService.getAllLoans(page, size, sort);
         var loans = pageLoans.getContent();
+
         var sortField = sort[0];
         var sortDirection = sort[1];
+
         model.addAttribute("loans", loans);
         model.addAttribute("loanType", "all");
+
         model.addAttribute("currentPage", pageLoans.getNumber() + 1);
         model.addAttribute("totalItems", pageLoans.getTotalElements());
         model.addAttribute("totalPages", pageLoans.getTotalPages());
         model.addAttribute("pageSize", size);
-        model.addAttribute("sortField", sortField );
+
+        model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+
         return "loan/allLoans";
     }
 
@@ -148,82 +143,87 @@ public class LoanController {
     @GetMapping("/myLoans")
     public String myLoans(Model model) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var user =  userRepository.findByEmail(authentication.getName());
+        var user = userRepository.findByEmail(authentication.getName());
+
         model.addAttribute("user", user);
+
         return "loan/myLoans";
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN') or @userServiceImpl.findById(#memberId).id == @userServiceImpl.findByEmail(authentication.name).id")
     @GetMapping("/{memberId}/current")
-    public String getCurrentLoans(@PathVariable("memberId") Integer memberId,
-                                   Model model,
-                                   @RequestParam(defaultValue = "1") int page,
-                                   @RequestParam(defaultValue = "3") int size,
-                                   @RequestParam(defaultValue = "id,asc") String[] sort) {
+    public String getCurrentLoans(@PathVariable("memberId") Integer memberId, Model model, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size, @RequestParam(defaultValue = "id,asc") String[] sort) {
         var pageLoans = loanService.getCurrentLoans(memberId, page, size, sort);
         var loans = pageLoans.getContent();
         var member = userRepository.findById(memberId).orElse(null);
+
         var sortField = sort[0];
         var sortDirection = sort[1];
+
         model.addAttribute("loans", loans);
-        model.addAttribute("member", member);
         model.addAttribute("loanType", "current");
+        model.addAttribute("member", member);
+
         model.addAttribute("currentPage", pageLoans.getNumber() + 1);
         model.addAttribute("totalItems", pageLoans.getTotalElements());
         model.addAttribute("totalPages", pageLoans.getTotalPages());
         model.addAttribute("pageSize", size);
-        model.addAttribute("sortField", sortField );
+
+        model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+
         return "loan/allLoans";
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN') or @userServiceImpl.findById(#memberId).id == @userServiceImpl.findByEmail(authentication.name).id")
     @GetMapping("/{memberId}/previous")
-    public String getPreviousLoans(@PathVariable("memberId") Integer memberId,
-                                  Model model,
-                                  @RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "3") int size,
-                                  @RequestParam(defaultValue = "id,asc") String[] sort) {
+    public String getPreviousLoans(@PathVariable("memberId") Integer memberId, Model model, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size, @RequestParam(defaultValue = "id,asc") String[] sort) {
         var pageLoans = loanService.getPreviousLoans(memberId, page, size, sort);
         var loans = pageLoans.getContent();
         var member = userRepository.findById(memberId).orElse(null);
+
         var sortField = sort[0];
         var sortDirection = sort[1];
+
         model.addAttribute("loans", loans);
-        model.addAttribute("member", member);
         model.addAttribute("loanType", "previous");
+        model.addAttribute("member", member);
+
         model.addAttribute("currentPage", pageLoans.getNumber() + 1);
         model.addAttribute("totalItems", pageLoans.getTotalElements());
         model.addAttribute("totalPages", pageLoans.getTotalPages());
         model.addAttribute("pageSize", size);
-        model.addAttribute("sortField", sortField );
+
+        model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+
         return "loan/allLoans";
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'LIBRARIAN')")
     @GetMapping("/book/{bookId}")
-    public String getLoansByBook(@PathVariable("bookId") Integer bookId,
-                                  Model model,
-                                  @RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "3") int size,
-                                  @RequestParam(defaultValue = "id,asc") String[] sort) {
+    public String getLoansByBook(@PathVariable("bookId") Integer bookId, Model model, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size, @RequestParam(defaultValue = "id,asc") String[] sort) {
         var pageLoans = loanService.getLoansByBookId(bookId, page, size, sort);
         var loans = pageLoans.getContent();
         var book = bookRepository.findById(bookId).orElse(null);
+
         var sortField = sort[0];
         var sortDirection = sort[1];
+
         model.addAttribute("loans", loans);
         model.addAttribute("book", book);
+
         model.addAttribute("currentPage", pageLoans.getNumber() + 1);
         model.addAttribute("totalItems", pageLoans.getTotalElements());
         model.addAttribute("totalPages", pageLoans.getTotalPages());
         model.addAttribute("pageSize", size);
-        model.addAttribute("sortField", sortField );
+
+        model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+
         return "loan/allLoans";
     }
 

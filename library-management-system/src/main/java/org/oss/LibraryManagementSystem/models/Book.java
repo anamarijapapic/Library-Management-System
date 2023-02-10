@@ -1,14 +1,10 @@
 package org.oss.LibraryManagementSystem.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-import javax.validation.constraints.NotNull;
 import jakarta.persistence.*;
 import lombok.*;
 import org.oss.LibraryManagementSystem.models.enums.Status;
+
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity

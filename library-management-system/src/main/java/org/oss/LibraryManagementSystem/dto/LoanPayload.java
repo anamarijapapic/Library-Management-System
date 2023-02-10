@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.sql.Date;
 
-
 @Data
 @Getter
 @Setter
@@ -24,4 +23,5 @@ public class LoanPayload {
     private Date dateReturned;
 
     private Integer book;
+
 }

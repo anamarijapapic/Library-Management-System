@@ -9,14 +9,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    public Optional<User> findById(Integer id);
+    Optional<User> findById(Integer id);
 
-    public User findByEmail(String email);
+    User findByEmail(String email);
 
-    Page<User> findAll (Pageable pageable);
+    Page<User> findAll(Pageable pageable);
 
     Page<User> findByEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String email, String firstName, String lastName, Pageable pageable);
 

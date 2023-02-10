@@ -1,70 +1,70 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Library Management System - User Page</title>
-  <th:block th:insert="~{fragments/head :: head}"></th:block>
+    <title>Library Management System - User Page</title>
+    <th:block th:insert="~{fragments/head :: head}"></th:block>
 </head>
 <body>
-  <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+<th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
 
-  <div class="container">
+<div class="container">
     <h1 class="display-2 text-center mt-2">User Details</h1>
 
     <div class="d-flex justify-content-center">
-      <div class="card w-75 mx-auto my-4">
-        <div class="card-body">
-          <h5 class="card-title" th:text="${'#' + user.id + ' - ' + user.firstName + ' ' + user.lastName}"></h5>
-          <h6 class="card-subtitle mb-2 text-muted" th:text="${user.email}"></h6>
+        <div class="card w-75 mx-auto my-4">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${'#' + user.id + ' - ' + user.firstName + ' ' + user.lastName}"></h5>
+                <h6 class="card-subtitle mb-2 text-muted" th:text="${user.email}"></h6>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <b>ID: </b>
+                    <span th:text="${user.id}"></span>
+                </li>
+                <li class="list-group-item">
+                    <b>First Name: </b>
+                    <span th:text="${user.firstName}"></span>
+                </li>
+                <li class="list-group-item">
+                    <b>Last Name: </b>
+                    <span th:text="${user.lastName}"></span>
+                </li>
+                <li class="list-group-item">
+                    <b>E-mail: </b>
+                    <a th:href="${'mailto:' + user.email}" th:text="${user.email}"></a>
+                </li>
+                <li class="list-group-item">
+                    <b>Date of Birth: </b>
+                    <span th:text="${user.dateOfBirth}"></span>
+                </li>
+                <li class="list-group-item">
+                    <b>Contact Number: </b>
+                    <a th:href="${'tel:' + user.contactNumber}" th:text="${user.contactNumber}"></a>
+                </li>
+                <li class="list-group-item">
+                    <b>Role: </b>
+                    <span th:each="role : ${user.roles}" th:text="${role.name}"></span>
+                </li>
+            </ul>
         </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <b>ID: </b>
-            <span th:text="${user.id}"></span>
-          </li>
-          <li class="list-group-item">
-            <b>First Name: </b>
-            <span th:text="${user.firstName}"></span>
-          </li>
-          <li class="list-group-item">
-            <b>Last Name: </b>
-            <span th:text="${user.lastName}"></span>
-          </li>
-          <li class="list-group-item">
-            <b>E-mail: </b>
-            <a th:href="${'mailto:' + user.email}" th:text="${user.email}"></a>
-          </li>
-          <li class="list-group-item">
-            <b>Date of Birth: </b>
-            <span th:text="${user.dateOfBirth}"></span>
-          </li>
-          <li class="list-group-item">
-            <b>Contact Number: </b>
-            <a th:href="${'tel:' + user.contactNumber}"  th:text="${user.contactNumber}"></a>
-          </li>
-          <li class="list-group-item">
-            <b>Role: </b>
-            <span th:each="role : ${user.roles}" th:text="${role.name}"></span>
-          </li>
-        </ul>
-      </div>
     </div>
 
     <div class="d-flex justify-content-center">
-      <a class="btn btn-lg btn-secondary"
-         th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}"
-         th:href="@{'/users'}" role="button"
-      >
-        Back
-      </a>
-      <a class="btn btn-lg btn-secondary" th:if="${#authorization.expression('hasAuthority(''MEMBER'')')}"
-         th:href="@{'/'}" role="button"
-      >
-        Go to homepage
-      </a>
+        <a class="btn btn-lg btn-secondary"
+           role="button"
+           th:href="@{'/users'}" th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''LIBRARIAN'')')}"
+        >
+            Back
+        </a>
+        <a class="btn btn-lg btn-secondary" role="button"
+           th:href="@{'/'}" th:if="${#authorization.expression('hasAuthority(''MEMBER'')')}"
+        >
+            Go to homepage
+        </a>
 
     </div>
-  </div>
+</div>
 
-  <div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

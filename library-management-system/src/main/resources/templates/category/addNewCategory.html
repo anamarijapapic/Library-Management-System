@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Library Management System - Add Category</title>
-  <th:block th:insert="~{fragments/head :: head}"></th:block>
+    <title>Library Management System - Add Category</title>
+    <th:block th:insert="~{fragments/head :: head}"></th:block>
 </head>
 <body>
-  <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+<th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
 
-  <div class="container">
+<div class="container">
     <h1 class="display-2 text-center mt-2">Add Category</h1>
 
-    <form th:action="@{/categories/saveCategory}" method="POST" class="my-4">
-      <div class="row mb-3">
-        <label for="categoryName" class="col-sm-2 col-form-label">Category Name</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="categoryName" th:field="*{categoryPayload.name}" required>
+    <form class="my-4" method="POST" th:action="@{/categories/saveCategory}">
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="categoryName">Category Name</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="categoryName" required th:field="*{categoryPayload.name}" type="text">
+            </div>
         </div>
-      </div>
 
-      <button type="submit" class="btn btn-lg btn-success">Add category</button>
+        <button class="btn btn-lg btn-success" type="submit">Add category</button>
     </form>
 
     <a th:href="@{/categories}"> Back to all categories</a>
-  </div>
+</div>
 
-  <div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

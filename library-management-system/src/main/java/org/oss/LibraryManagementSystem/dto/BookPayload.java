@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.sql.Date;
 
-
 @Data
 @Getter
 @Setter
@@ -23,4 +22,5 @@ public class BookPayload {
     private String isbn;
 
     private String bookStatus;
+
 }

@@ -1,4 +1,5 @@
 package org.oss.LibraryManagementSystem.dto;
+
 import lombok.*;
 
 import java.sql.Date;
@@ -25,4 +26,5 @@ public class UserPayload {
     private String userRole;
 
     private String contactNumber;
+
 }

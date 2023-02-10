@@ -1,15 +1,15 @@
 package org.oss.LibraryManagementSystem.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import org.oss.LibraryManagementSystem.models.Role;
 import org.oss.LibraryManagementSystem.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public class CustomUserDetails implements UserDetails {
 

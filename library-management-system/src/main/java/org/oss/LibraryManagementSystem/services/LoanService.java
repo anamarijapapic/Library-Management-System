@@ -4,7 +4,6 @@ import org.oss.LibraryManagementSystem.dto.LoanPayload;
 import org.oss.LibraryManagementSystem.models.Loan;
 import org.springframework.data.domain.Page;
 
-
 public interface LoanService {
 
     Loan createLoan(Integer bookId, LoanPayload loanPayload);

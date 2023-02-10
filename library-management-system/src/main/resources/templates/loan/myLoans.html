@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Library Management System - My Loans</title>
-  <th:block th:insert="~{fragments/head :: head}"></th:block>
+    <title>Library Management System - My Loans</title>
+    <th:block th:insert="~{fragments/head :: head}"></th:block>
 </head>
 <body>
-  <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+<th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
 
-  <div class="px-4 py-5 my-5 text-center">
+<div class="px-4 py-5 my-5 text-center">
     <h1 class="display-2">My Loans</h1>
 
     <div class="col-lg-6 mx-auto">
-      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
-        <a class="btn btn-primary btn-lg px-4" th:href="@{'/loans/' + ${user.id} + '/previous'}">Previous Loans</a>
-        <a class="btn btn-primary btn-lg px-4" th:href="@{'/loans/' + ${user.id} + '/current'}">Current Loans</a>
-      </div>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+            <a class="btn btn-primary btn-lg px-4" th:href="@{'/loans/' + ${user.id} + '/previous'}">Previous Loans</a>
+            <a class="btn btn-primary btn-lg px-4" th:href="@{'/loans/' + ${user.id} + '/current'}">Current Loans</a>
+        </div>
     </div>
-  </div>
+</div>
 
-  <div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

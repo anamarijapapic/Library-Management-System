@@ -86,42 +86,51 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public Page<Loan> getAllLoans(int page, int size, String[] sort) {
-        String sortField = sort[0];
-        String sortDirection = sort[1];
-        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort.Order order = new Sort.Order(direction, sortField);
+        var sortField = sort[0];
+        var sortDirection = sort[1];
+        var direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        var order = new Sort.Order(direction, sortField);
+
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
+
         return loanRepository.findAll(paging);
     }
 
     @Override
     public Page<Loan> getCurrentLoans(Integer memberId, int page, int size, String[] sort) {
-        String sortField = sort[0];
-        String sortDirection = sort[1];
-        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort.Order order = new Sort.Order(direction, sortField);
+        var sortField = sort[0];
+        var sortDirection = sort[1];
+        var direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        var order = new Sort.Order(direction, sortField);
+
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
+
         return loanRepository.findByMemberIdAndDateReturned(memberId, null, paging);
     }
 
     @Override
     public Page<Loan> getPreviousLoans(Integer memberId, int page, int size, String[] sort) {
-        String sortField = sort[0];
-        String sortDirection = sort[1];
-        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort.Order order = new Sort.Order(direction, sortField);
+        var sortField = sort[0];
+        var sortDirection = sort[1];
+        var direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        var order = new Sort.Order(direction, sortField);
+
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
+
         var now = new Timestamp(System.currentTimeMillis());
+
         return loanRepository.findByMemberIdAndDateReturnedBefore(memberId, now, paging);
     }
 
     @Override
     public Page<Loan> getLoansByBookId(Integer bookId, int page, int size, String[] sort) {
-        String sortField = sort[0];
-        String sortDirection = sort[1];
-        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort.Order order = new Sort.Order(direction, sortField);
+        var sortField = sort[0];
+        var sortDirection = sort[1];
+        var direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        var order = new Sort.Order(direction, sortField);
+
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(order));
+
         return loanRepository.findByBookId(bookId, paging);
     }
 

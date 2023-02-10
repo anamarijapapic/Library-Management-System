@@ -1,73 +1,75 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Library Management System - Edit Book</title>
-  <th:block th:insert="~{fragments/head :: head}"></th:block>
+    <title>Library Management System - Edit Book</title>
+    <th:block th:insert="~{fragments/head :: head}"></th:block>
 </head>
 <body>
-  <th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
+<th:block th:insert="~{fragments/navigation :: navigation}"></th:block>
 
-  <div class="container">
+<div class="container">
     <h1 class="display-2 text-center mt-2">Edit Book</h1>
 
-    <form th:action="@{/books/updateBook}" method="POST" class="my-4">
-      <input type="hidden" th:field="*{bookPayload.id}">
+    <form class="my-4" method="POST" th:action="@{/books/updateBook}">
+        <input th:field="*{bookPayload.id}" type="hidden">
 
-      <div class="row mb-3">
-        <label for="work" class="col-sm-2 col-form-label">Work</label>
-        <div class="col-sm-10">
-          <select class="form-select js-select2" id="work" th:field="*{bookPayload.work}" required>
-            <option
-                    th:each="work: ${worksOptions}"
-                    th:value="${work.id}" th:text="${work.title}"
-            ></option>
-          </select>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="work">Work</label>
+            <div class="col-sm-10">
+                <select class="form-select js-select2" id="work" required th:field="*{bookPayload.work}">
+                    <option
+                            th:each="work: ${worksOptions}"
+                            th:text="${work.title}" th:value="${work.id}"
+                    ></option>
+                </select>
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="publisherName" class="col-sm-2 col-form-label">Publisher Name</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="publisherName" th:field="*{bookPayload.publisherName}" required>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="publisherName">Publisher Name</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="publisherName" required th:field="*{bookPayload.publisherName}"
+                       type="text">
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="yearOfPublishing" class="col-sm-2 col-form-label">Year of Publishing</label>
-        <div class="col-sm-10">
-          <input type="date" class="form-control" id="yearOfPublishing" th:field="*{bookPayload.yearOfPublishing}" required>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="yearOfPublishing">Year of Publishing</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="yearOfPublishing" required th:field="*{bookPayload.yearOfPublishing}"
+                       type="date">
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="isbn" class="col-sm-2 col-form-label">ISBN</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="isbn" th:field="*{bookPayload.isbn}" required>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="isbn">ISBN</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="isbn" required th:field="*{bookPayload.isbn}" type="text">
+            </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="bookStatus" class="col-sm-2 col-form-label">Status</label>
-        <div class="col-sm-10">
-          <select class="form-select" id="bookStatus" th:field="*{bookPayload.bookStatus}" required>
-            <option
-                    th:each="status: ${statusOptions}"
-                    th:value="${status}" th:text="${status}"
-            ></option>
-          </select>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="bookStatus">Status</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="bookStatus" required th:field="*{bookPayload.bookStatus}">
+                    <option
+                            th:each="status: ${statusOptions}"
+                            th:text="${status}" th:value="${status}"
+                    ></option>
+                </select>
+            </div>
         </div>
-      </div>
 
-      <button type="submit" class="btn btn-lg btn-warning">Update book</button>
+        <button class="btn btn-lg btn-warning" type="submit">Update book</button>
     </form>
 
     <a th:href="@{/books}">Back to all books</a>
-  </div>
+</div>
 
-  <div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
-  <script type="text/javascript">
+<script type="text/javascript">
     yearOfPublishing.max = new Date().toISOString().split("T")[0];
 
-    $(document).ready(function() {
-      $('.js-select2').select2();
+    $(document).ready(function () {
+        $('.js-select2').select2();
     });
-  </script>
+</script>
 </body>
 </html>

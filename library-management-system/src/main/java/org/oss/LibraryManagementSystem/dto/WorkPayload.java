@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.util.Set;
 
-
 @Data
 @Getter
 @Setter
@@ -21,4 +20,5 @@ public class WorkPayload {
     private Set<Integer> authors;
 
     private Set<Integer> categories;
+
 }

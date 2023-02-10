@@ -1,18 +1,22 @@
 package org.oss.LibraryManagementSystem.models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "\"user\"", uniqueConstraints = { @UniqueConstraint(columnNames = {"email"}) })
+@Table(name = "\"user\"", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class User {
 
     @Id

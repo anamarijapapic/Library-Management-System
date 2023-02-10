@@ -36,36 +36,36 @@ public class UserDataLoader implements CommandLineRunner {
         roles.add(roleMember);
 
         var user1 = new User(
-            "Anamarija",
-            "Papić",
-            "$2a$12$3tZr1OLzCU1mojVnwAtBlOOy9WkJNM2Yifbr3iAxVQBFXlqIAlw22",
-            "anamarija@oss.org",
+                "Anamarija",
+                "Papić",
+                "$2a$12$3tZr1OLzCU1mojVnwAtBlOOy9WkJNM2Yifbr3iAxVQBFXlqIAlw22",
+                "anamarija@oss.org",
                 new Timestamp(new SimpleDateFormat("yyyy/MM/dd").parse("1970/07/19").getTime()),
-            "+4444444444",
-            true,
-            roles
+                "+4444444444",
+                true,
+                roles
         );
 
         var user2 = new User(
-            "Ivana",
-            "Mihanović",
-            "$2a$12$3tZr1OLzCU1mojVnwAtBlOOy9WkJNM2Yifbr3iAxVQBFXlqIAlw22",
-            "ivana@oss.org",
-            new Timestamp(new SimpleDateFormat("yyyy/MM/dd").parse("2010/10/20").getTime()),
-            "+5555555555",
-            true,
-            roles
+                "Ivana",
+                "Mihanović",
+                "$2a$12$3tZr1OLzCU1mojVnwAtBlOOy9WkJNM2Yifbr3iAxVQBFXlqIAlw22",
+                "ivana@oss.org",
+                new Timestamp(new SimpleDateFormat("yyyy/MM/dd").parse("2010/10/20").getTime()),
+                "+5555555555",
+                true,
+                roles
         );
 
         var user3 = new User(
-            "Petar",
-            "Vidović",
-            "$2a$12$3tZr1OLzCU1mojVnwAtBlOOy9WkJNM2Yifbr3iAxVQBFXlqIAlw22",
-            "petar@oss.org",
-            new Timestamp(new SimpleDateFormat("yyyy/MM/dd").parse("1950/05/19").getTime()),
-            "+6666666666",
-            true,
-            roles
+                "Petar",
+                "Vidović",
+                "$2a$12$3tZr1OLzCU1mojVnwAtBlOOy9WkJNM2Yifbr3iAxVQBFXlqIAlw22",
+                "petar@oss.org",
+                new Timestamp(new SimpleDateFormat("yyyy/MM/dd").parse("1950/05/19").getTime()),
+                "+6666666666",
+                true,
+                roles
         );
 
         var users = new ArrayList<User>();

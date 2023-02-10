@@ -5,10 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Set;
-
 public interface AuthorRepository extends JpaRepository<Author, Integer> {
-    Page<Author> findAll (Pageable pageable);
 
-    Page<Author> findByFirstNameContainingOrLastNameContaining (String firstName, String lastName, Pageable pageable);
+    Page<Author> findAll(Pageable pageable);
+
+    Page<Author> findByFirstNameContainingOrLastNameContaining(String firstName, String lastName, Pageable pageable);
+
 }
